@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
-        mToolbar.setTitle("架构实例");
+        mToolbar.setTitle("架构示例");
         mToolbar.inflateMenu(R.menu.main);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
