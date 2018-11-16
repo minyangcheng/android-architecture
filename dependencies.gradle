@@ -36,6 +36,7 @@ project.ext {
             "butterknife"           : "com.jakewharton:butterknife:8.5.1",
             "butterknife-compiler"  : "com.jakewharton:butterknife-compiler:8.5.1",
             "gson"                  : "com.google.code.gson:gson:2.4",
+            "fastjson"              : "com.alibaba:fastjson:1.2.7",
             "timber"                : "com.jakewharton.timber:timber:4.1.0",
             "universal-image-loader": "com.nostra13.universalimageloader:universal-image-loader:1.9.5",
             "greendao"              : "org.greenrobot:greendao:3.1.1",

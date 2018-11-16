@@ -31,5 +31,11 @@ dependencies {
     compile rootProject.ext.dependencies["support-v4"]
     compile rootProject.ext.dependencies["appcompat-v7"]
 
-    compile 'com.blankj:utilcode:1.21.2'
+    compile 'com.alibaba:fastjson:1.2.7'
+    compile 'de.greenrobot:eventbus:3.0.0-beta1'
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'com.journeyapps:zxing-android-embedded:3.5.0'
+    compile 'com.baoyz.actionsheet:library:1.1.7'
+//    compile 'com.yanzhenjie:album:2.0.2'
 }

@@ -132,6 +132,7 @@ dependencies {
     compile rootProject.ext.dependencies["crashreport"]
     debugCompile rootProject.ext.dependencies["stetho"]
 
+    compile project(':librarys-base:h5-container')
     compile project(':librarys-base:core-basics')
     if(!isBuildModule.toBoolean()){
         compile project(':librarys-business:order')

@@ -15,6 +15,7 @@ import com.min.core.base.BaseActivity;
 import com.min.core.base.BaseDialog;
 import com.min.core.base.BasePopupWindow;
 import com.min.core.util.GsonUtil;
+import com.min.hybrid.H5ContainerActivity;
 import com.min.sample.R;
 import com.min.sample.data.local.db.delegate.SearchDaoDelegate;
 import com.min.sample.data.model.SearchBean;
@@ -67,8 +68,7 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btn_web)
     void clickOpenWeb() {
-        Floo.navigation(getContext(), "http://www.baidu.com")
-                .start();
+        H5ContainerActivity.startActivity(this, "http://10.10.12.170:8080");
     }
 
     @OnClick(R.id.btn_popwin)
