@@ -5,15 +5,13 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.min.hybrid.H5ContainerActivity;
 import com.min.hybrid.util.HybridUtil;
+import com.min.hybrid.webview.bridge.ModuleInstance;
+import com.min.hybrid.webview.bridge.ModuleInstanceManager;
 
 public class HybridWebViewClient extends WebViewClient {
 
-    private H5ContainerActivity mContainer;
-
-    public HybridWebViewClient(H5ContainerActivity container) {
-        this.mContainer = container;
+    public HybridWebViewClient() {
     }
 
     @Override
@@ -22,7 +20,10 @@ public class HybridWebViewClient extends WebViewClient {
         HybridUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                WebViewHandlerManager.getWeexHandler(view.getContext()).handleError(description, failingUrl);
+                ModuleInstance moduleInstance = ModuleInstanceManager.getModuleInstance(view.getContext());
+                if (moduleInstance != null && moduleInstance.getWebViewHandler() != null) {
+                    moduleInstance.getWebViewHandler().handleError(description, failingUrl);
+                }
             }
         });
     }
@@ -35,6 +36,9 @@ public class HybridWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        WebViewHandlerManager.getWeexHandler(view.getContext()).handleFinish(url);
+        ModuleInstance moduleInstance = ModuleInstanceManager.getModuleInstance(view.getContext());
+        if (moduleInstance != null && moduleInstance.getWebViewHandler() != null) {
+            moduleInstance.getWebViewHandler().handleFinish(url);
+        }
     }
 }

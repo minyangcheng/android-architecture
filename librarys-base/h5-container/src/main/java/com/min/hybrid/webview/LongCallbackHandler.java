@@ -3,8 +3,7 @@ package com.min.hybrid.webview;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.min.hybrid.webview.HybridWebView;
-import com.min.hybrid.webview.bridge.BridgeCallback;
+import com.min.hybrid.webview.bridge.JSCallback;
 
 import java.util.HashMap;
 
@@ -18,9 +17,6 @@ public class LongCallbackHandler {
     public static String OnClickNbTitle = "OnClickNbTitle";//导航栏标题按钮
     public static String OnClickNbRight = "OnClickNbRight";//导航栏最右侧按钮
     public static String OnClickBack = "OnClickBack";//系统返回按钮（物理返回键）
-
-    public static String OnScanCode = "OnScanCode";//扫描二维码
-    public static String OnChoosePic = "OnChoosePic";//选择或者预览图片,包括拍照、选择相册
 
     private HashMap<String, String> portMap = new HashMap<>();
 
@@ -62,24 +58,16 @@ public class LongCallbackHandler {
         callJS(OnClickNbRight + which, webView, object);
     }
 
-    public void onScanCode(JSONObject object) {
-        callJS(OnScanCode, webView, object);
-    }
-
-    public void onChoosePic(JSONObject object) {
-        callJS(OnChoosePic, webView, object);
-    }
-
     private void callJS(String key, HybridWebView webView, JSONObject object) {
         if (webView == null) {
             return;
         }
         String port = portMap.get(key);
         if (TextUtils.isEmpty(port)) {
-            BridgeCallback callback = new BridgeCallback(BridgeCallback.ERROR_PORT, webView);
-            callback.applyNativeError(webView.getUrl(), key + "未注册");
+            JSCallback callback = new JSCallback(webView);
+            callback.applyError(webView.getUrl(), key + "未注册");
         } else {
-            BridgeCallback callback = new BridgeCallback(port, webView);
+            JSCallback callback = new JSCallback(port, webView);
             callback.applySuccess(object);
         }
     }

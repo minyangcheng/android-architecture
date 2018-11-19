@@ -1,6 +1,8 @@
-package com.min.hybrid.webview;
+package com.min.hybrid.webview.bridge;
 
 import android.view.View;
+
+import com.min.hybrid.webview.LongCallbackHandler;
 
 /**
  * Created by minych on 18-11-9.

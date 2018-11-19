@@ -13,6 +13,8 @@ import com.min.hybrid.HybridConstants;
 import com.min.hybrid.util.HybridUtil;
 import com.min.hybrid.util.L;
 import com.min.hybrid.webview.bridge.JSBridge;
+import com.min.hybrid.webview.bridge.ModuleInstance;
+import com.min.hybrid.webview.bridge.ModuleInstanceManager;
 
 import java.net.URLDecoder;
 
@@ -97,9 +99,9 @@ public class HybridWebChromeClient extends WebChromeClient {
 
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-        L.d(HybridConstants.TAG, String.format("request-->message=%s", URLDecoder.decode(message)));
-        String s = JSBridge.callJava(view, message);
-        result.confirm(s);
+        L.d(HybridConstants.TAG, String.format("callNative-->%s", URLDecoder.decode(message)));
+        JSBridge.callNative(view, message);
+        result.confirm("");
         return true;
     }
 
@@ -109,7 +111,10 @@ public class HybridWebChromeClient extends WebChromeClient {
         HybridUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                WebViewHandlerManager.getWeexHandler(view.getContext()).handleProgressChanged(newProgress);
+                ModuleInstance moduleInstance = ModuleInstanceManager.getModuleInstance(view.getContext());
+                if (moduleInstance != null && moduleInstance.getWebViewHandler() != null) {
+                    moduleInstance.getWebViewHandler().handleProgressChanged(newProgress);
+                }
             }
         });
     }

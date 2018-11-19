@@ -1,39 +1,26 @@
 package com.min.hybrid.webview.bridge;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.min.hybrid.HybridConstants;
 import com.min.hybrid.util.HybridUtil;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import com.min.hybrid.util.L;
 
 public class JSBridge {
 
-    public static Map<String, HashMap<String, Method>> mExposedMethods = new HashMap<>();
+    public static String JS_FUNCTION = "javascript:JSBridge._handleMessageFromNative(%s);";
 
-    public static void register(String moduleName, Class clazz) {
-        try {
-            HashMap<String, Method> mMethodsMap = new HashMap<>();
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                mMethodsMap.put(method.getName(), method);
-            }
-            mExposedMethods.put(moduleName, mMethodsMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String callJava(WebView webView, String url) {
-        BridgeCallback callback = null;
+    public static void callNative(WebView webView, String url) {
+        JSCallback callback = null;
         String error = null;
+        String moduleName = null;
         String methodName = null;
-        String apiName = null;
         String param = null;
         String port = null;
 
@@ -56,9 +43,9 @@ public class JSBridge {
                 error = "url解析失败";
                 break;
             }
-            apiName = uri.getHost();
-            if (TextUtils.isEmpty(apiName)) {
-                error = "API_Nam为空";
+            moduleName = uri.getHost();
+            if (TextUtils.isEmpty(moduleName)) {
+                error = "moduleName为空";
                 break;
             }
             port = uri.getPort() + "";
@@ -66,7 +53,7 @@ public class JSBridge {
                 error = "port为空";
                 break;
             }
-            callback = new BridgeCallback(port, webView);
+            callback = new JSCallback(port, webView);
             methodName = uri.getPath();
             methodName = methodName.replace("/", "");
             if (TextUtils.isEmpty(methodName)) {
@@ -81,44 +68,76 @@ public class JSBridge {
         }
         if (!parseSuccess) {
             if (callback == null) {
-                new BridgeCallback(BridgeCallback.ERROR_PORT, webView).applyNativeError(url, error);
+                new JSCallback(webView).applyError(url, error);
             } else {
                 callback.applyFail(error);
             }
-            return error;
         }
-        if (mExposedMethods.containsKey(apiName)) {
-            HashMap<String, Method> methodHashMap = mExposedMethods.get(apiName);
-            if (methodHashMap != null && methodHashMap.containsKey(methodName)) {
-                Method method = methodHashMap.get(methodName);
-                execute(webView, method, param, callback);
+        ModuleInstance moduleInstance = ModuleInstanceManager.getModuleInstance(webView.getContext());
+        if (moduleInstance != null && moduleInstance.hasModule(moduleName)) {
+            Class[] paramsTypes = new Class[3];
+            paramsTypes[0] = ModuleInstance.class;
+            paramsTypes[1] = JSONObject.class;
+            paramsTypes[2] = JSCallback.class;
+            if (moduleInstance.hasMethodInModule(moduleName, methodName, paramsTypes)) {
+                callNative(moduleInstance, moduleName, methodName, param, callback);
             } else {
-                error = apiName + "." + methodName + "未找到";
+                error = moduleName + "." + methodName + "未找到";
                 callback.applyFail(error);
-                return error;
             }
         } else {
-            error = apiName + "未注册";
+            error = moduleName + "未注册";
             callback.applyFail(error);
-            return error;
         }
-        return null;
     }
 
-    private static void execute(final WebView webView, final Method method, final String param, final BridgeCallback callback) {
+    private static void callNative(final ModuleInstance moduleInstance, final String moduleName, final String methodName, final String param, final JSCallback jsCallback) {
         HybridUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (method != null) {
-                    try {
-                        method.invoke(null, webView, JSON.parseObject(param), callback);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        callback.applyFail(e.toString());
-                    }
+                Object[] args = new Object[3];
+                args[0] = moduleInstance;
+                args[1] = JSON.parseObject(param);
+                args[2] = jsCallback;
+                moduleInstance.invokeModule(moduleName, methodName, args);
+            }
+        });
+    }
+
+    public static void executeJs(WebView webView, String port, JSONObject data) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("responseId", port);
+        jsonObject.put("responseData", data);
+        String execJs = String.format(JS_FUNCTION, jsonObject.toJSONString());
+        executeJs(webView, execJs);
+    }
+
+    public static void executeJsByEvent(WebView webView, String handlerName, JSONObject data) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("handlerName", handlerName == null ? "" : handlerName);
+        jsonObject.put("data", data == null ? (new JSONObject()) : data);
+        String execJs = String.format(JS_FUNCTION, jsonObject.toJSONString());
+        executeJs(webView, execJs);
+    }
+
+    public static void executeJs(final WebView webView, final String js) {
+        HybridUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (webView != null && checkContext(webView.getContext()) && webView.getParent() != null) {
+                    L.d(HybridConstants.TAG, String.format("executeJs-->%s", js));
+                    webView.loadUrl(js);
                 }
             }
         });
+    }
+
+    private static boolean checkContext(Context context) {
+        if (context == null) {
+            return false;
+        }
+        Activity activity = (Activity) context;
+        return !activity.isFinishing();
     }
 
 }

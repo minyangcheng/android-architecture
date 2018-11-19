@@ -16,16 +16,13 @@ import com.min.hybrid.library.R;
 import com.min.hybrid.util.EventUtil;
 import com.min.hybrid.util.HybridUtil;
 import com.min.hybrid.util.L;
-import com.min.hybrid.util.ModuleLoader;
 import com.min.hybrid.webview.HybridWebChromeClient;
 import com.min.hybrid.webview.HybridWebView;
 import com.min.hybrid.webview.HybridWebViewClient;
-import com.min.hybrid.webview.IWebViewHandler;
 import com.min.hybrid.webview.LongCallbackHandler;
-import com.min.hybrid.webview.WebViewHandlerManager;
-import com.min.hybrid.webview.bridge.BridgeCallback;
+import com.min.hybrid.webview.bridge.IWebViewHandler;
 import com.min.hybrid.webview.bridge.JSBridge;
-import com.min.hybrid.widget.HudDialog;
+import com.min.hybrid.webview.bridge.ModuleInstance;
 import com.min.hybrid.widget.NavigationBar;
 import com.min.hybrid.widget.WebViewProgressBar;
 
@@ -42,11 +39,8 @@ public class H5ContainerActivity extends AppCompatActivity {
     private View mErrorContentView;
     private View mRetryView;
 
-    private HybridWebViewClient mWebviewClient;
-    private HybridWebChromeClient mChromeClient;
-
-    private LongCallbackHandler mEventHandler;
-    private HudDialog mHudDialog;
+    private ModuleInstance moduleInstance;
+    private LongCallbackHandler mLongCallbackHandler;
 
     public static void startActivity(Context context, String url) {
         Intent intent = new Intent(context, H5ContainerActivity.class);
@@ -65,10 +59,8 @@ public class H5ContainerActivity extends AppCompatActivity {
         initView();
         setRouteData();
 
-        if (JSBridge.mExposedMethods.isEmpty()) {
-            ModuleLoader.loadModuleFromAsset(this);
-        }
-        WebViewHandlerManager.add(this, webViewHandler);
+        moduleInstance = new ModuleInstance(this);
+        moduleInstance.setWebViewHandler(mWebViewHandler);
     }
 
     public void getDataFromIntent(Bundle savedInstanceState) {
@@ -93,8 +85,8 @@ public class H5ContainerActivity extends AppCompatActivity {
         mWebView.onResume();
         mWebView.resumeTimers();
         super.onResume();
-        if (mEventHandler.hasPort(LongCallbackHandler.OnPageResume)) {
-            mEventHandler.onPageResume();
+        if (mLongCallbackHandler.hasPort(LongCallbackHandler.OnPageResume)) {
+            mLongCallbackHandler.onPageResume();
         }
     }
 
@@ -103,8 +95,8 @@ public class H5ContainerActivity extends AppCompatActivity {
         mWebView.onPause();
         mWebView.pauseTimers();
         super.onPause();
-        if (mEventHandler.hasPort(LongCallbackHandler.OnPagePause)) {
-            mEventHandler.onPagePause();
+        if (mLongCallbackHandler.hasPort(LongCallbackHandler.OnPagePause)) {
+            mLongCallbackHandler.onPagePause();
         }
     }
 
@@ -124,7 +116,9 @@ public class H5ContainerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         EventUtil.unregister(this);
-        WebViewHandlerManager.remove(this);
+        if (moduleInstance != null) {
+            moduleInstance.destroy();
+        }
         super.onDestroy();
     }
 
@@ -155,18 +149,18 @@ public class H5ContainerActivity extends AppCompatActivity {
                 if (view.getTag() != null && "close".equals(view.getTag().toString())) {
                     onNbBack();
                 } else {
-                    mEventHandler.onClickNbLeft();
+                    mLongCallbackHandler.onClickNbLeft();
                 }
             }
 
             @Override
             public void onNbRight(View view, int which) {
-                mEventHandler.onClickNbRight(which);
+                mLongCallbackHandler.onClickNbRight(which);
             }
 
             @Override
             public void onNbTitle(View view) {
-                mEventHandler.onClickNbTitle(0);
+                mLongCallbackHandler.onClickNbTitle(0);
             }
         });
         mNavigationBar.setColorFilter(HybridUtil.getColorPrimary(this));
@@ -177,11 +171,11 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
     private void initWebView() {
-        mEventHandler = new LongCallbackHandler(mWebView);
-        mWebviewClient = new HybridWebViewClient(this);
-        mWebView.setWebViewClient(mWebviewClient);
-        mChromeClient = new HybridWebChromeClient(this);
-        mWebView.setWebChromeClient(mChromeClient);
+        mLongCallbackHandler = new LongCallbackHandler(mWebView);
+        HybridWebViewClient webViewClient = new HybridWebViewClient();
+        mWebView.setWebViewClient(webViewClient);
+        HybridWebChromeClient chromeClient = new HybridWebChromeClient(this);
+        mWebView.setWebChromeClient(chromeClient);
     }
 
 
@@ -210,11 +204,11 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
     public void backPress(String eventType) {
-        if (mEventHandler.hasPort(eventType)) {
+        if (mLongCallbackHandler.hasPort(eventType)) {
             if (eventType == LongCallbackHandler.OnClickNbBack) {
-                mEventHandler.onClickNbBack();
+                mLongCallbackHandler.onClickNbBack();
             } else if (eventType == LongCallbackHandler.OnClickBack) {
-                mEventHandler.onClickBack();
+                mLongCallbackHandler.onClickBack();
             }
         } else {
             if (mWebView.canGoBack()) {
@@ -233,15 +227,17 @@ public class H5ContainerActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (moduleInstance != null) {
+            moduleInstance.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Subscribe
     public void onEvent(HybridEvent event) {
-        BridgeCallback callback = new BridgeCallback("", mWebView);
-        callback.postEventToJs(event.type, event.data);
+        JSBridge.executeJsByEvent(mWebView, event.type, event.data);
     }
 
-    private IWebViewHandler webViewHandler = new IWebViewHandler() {
+    private IWebViewHandler mWebViewHandler = new IWebViewHandler() {
         @Override
         public LongCallbackHandler getLongCallbackHandler() {
             return null;
