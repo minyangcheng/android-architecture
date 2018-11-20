@@ -1,7 +1,5 @@
 package com.min.hybrid.webview.bridge;
 
-import android.view.View;
-
 import com.min.hybrid.webview.LongCallbackHandler;
 
 /**
@@ -18,27 +16,30 @@ public interface IWebViewHandler {
 
     void hideHudDialog();
 
-    void setNBVisibility(boolean visible);
-
-    void setNBBackBtnVisibility(boolean visible);
-
-    void setNBTitle(String title, String subTitle);
-
-    void setNBTitleClickable(boolean clickable, int arrow);
-
-    void setNBLeftBtn(String imageUrl, String text);
-
-    void hideNBLeftBtn();
-
-    void setNBRightBtn(int which, String imageUrl, String text);
-
-    void hideNBRightBtn(int which);
-
-    View getNBRoot();
-
     void handleError(String description, String failingUrl);
 
     void handleFinish(String url);
 
     void handleProgressChanged(int newProgress);
+
+    void setTitleBarVisibility(boolean visible);
+
+    void setTitleBarBackVisibility(boolean visible);
+
+    void setTitleBarCloseVisibility(boolean visible);
+
+    void setTitleBarLeftBtn(String imageUrl, String text);
+
+    void hideTitleBarLeftButton();
+
+    void setTitleBarRightBtn(int which, String imageUrl, String text);
+
+    void hideTitleBarRightButtons();
+
+    void hideTitleBarRightButton(int which);
+
+    void setTitle(String title);
+
+    void setSubTitle(String subTitle);
+
 }

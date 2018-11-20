@@ -10,11 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.min.common.widget.TitleBar;
 import com.min.hybrid.bean.HybridEvent;
 import com.min.hybrid.bean.Route;
-import com.min.hybrid.library.R;
 import com.min.hybrid.util.EventUtil;
-import com.min.hybrid.util.HybridUtil;
 import com.min.hybrid.util.L;
 import com.min.hybrid.webview.HybridWebChromeClient;
 import com.min.hybrid.webview.HybridWebView;
@@ -23,7 +22,7 @@ import com.min.hybrid.webview.LongCallbackHandler;
 import com.min.hybrid.webview.bridge.IWebViewHandler;
 import com.min.hybrid.webview.bridge.JSBridge;
 import com.min.hybrid.webview.bridge.ModuleInstance;
-import com.min.hybrid.widget.NavigationBar;
+import com.min.hybrid.widget.HudDialog;
 import com.min.hybrid.widget.WebViewProgressBar;
 
 import de.greenrobot.event.Subscribe;
@@ -32,7 +31,7 @@ public class H5ContainerActivity extends AppCompatActivity {
 
     private Route mRoute;
 
-    private NavigationBar mNavigationBar;
+    private TitleBar mTitleBar;
     private WebViewProgressBar mProgressBar;
     private HybridWebView mWebView;
 
@@ -41,6 +40,8 @@ public class H5ContainerActivity extends AppCompatActivity {
 
     private ModuleInstance moduleInstance;
     private LongCallbackHandler mLongCallbackHandler;
+
+    private HudDialog mHudDialog;
 
     public static void startActivity(Context context, String url) {
         Intent intent = new Intent(context, H5ContainerActivity.class);
@@ -123,7 +124,7 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
     private void findView() {
-        mNavigationBar = (NavigationBar) findViewById(R.id.view_nb);
+        mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mWebView = (HybridWebView) findViewById(R.id.wv);
         mProgressBar = (WebViewProgressBar) findViewById(R.id.pb);
         mErrorContentView = findViewById(R.id.view_error);
@@ -138,35 +139,33 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mNavigationBar.setOnNavigationBarListener(new NavigationBar.INbOnClick() {
+        mTitleBar.setTitleBarListener(new TitleBar.TitleBarListener() {
             @Override
-            public void onNbBack() {
+            public void onClickBack() {
                 backPress(LongCallbackHandler.OnClickNbBack);
             }
 
             @Override
-            public void onNbLeft(View view) {
-                if (view.getTag() != null && "close".equals(view.getTag().toString())) {
-                    onNbBack();
-                } else {
-                    mLongCallbackHandler.onClickNbLeft();
-                }
+            public void onClickClose() {
+                backPress(LongCallbackHandler.OnClickNbBack);
             }
 
             @Override
-            public void onNbRight(View view, int which) {
-                mLongCallbackHandler.onClickNbRight(which);
+            public void onClickLeft() {
+                mLongCallbackHandler.onClickNbLeft();
             }
 
             @Override
-            public void onNbTitle(View view) {
+            public void onClickTitle() {
                 mLongCallbackHandler.onClickNbTitle(0);
             }
+
+            @Override
+            public void onClickRight(View view, int which) {
+                mLongCallbackHandler.onClickNbRight(which);
+            }
         });
-        mNavigationBar.setColorFilter(HybridUtil.getColorPrimary(this));
-        if (!mRoute.showBackBtn) {
-            mNavigationBar.hideNbBack();
-        }
+        mTitleBar.setBackVisibility(mRoute.showBackBtn);
         initWebView();
     }
 
@@ -185,10 +184,10 @@ public class H5ContainerActivity extends AppCompatActivity {
                 setRequestedOrientation(mRoute.orientation);
             }
             if (!TextUtils.isEmpty(mRoute.title)) {
-                mNavigationBar.setNbTitle(mRoute.title);
+                mTitleBar.setTitle(mRoute.title);
             }
             if (mRoute.pageStyle == -1) {
-                mNavigationBar.hide();
+                mTitleBar.setVisibility(View.GONE);
             }
         }
         loadUrl();
@@ -238,85 +237,110 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
     private IWebViewHandler mWebViewHandler = new IWebViewHandler() {
+
         @Override
         public LongCallbackHandler getLongCallbackHandler() {
-            return null;
+            return mLongCallbackHandler;
         }
 
         @Override
         public void refresh() {
-
+            mWebView.clearHistory();
+            loadUrl();
         }
 
         @Override
         public void showHudDialog(String message, boolean cancelable) {
-
+            if (mHudDialog == null) {
+                mHudDialog = HudDialog.createProgressHud(H5ContainerActivity.this);
+            }
+            mHudDialog.setCancelable(cancelable);
+            mHudDialog.setMessage(message);
+            if (!mHudDialog.isShowing()) {
+                mHudDialog.show();
+            }
         }
 
         @Override
         public void hideHudDialog() {
-
-        }
-
-        @Override
-        public void setNBVisibility(boolean visible) {
-
-        }
-
-        @Override
-        public void setNBBackBtnVisibility(boolean visible) {
-
-        }
-
-        @Override
-        public void setNBTitle(String title, String subTitle) {
-
-        }
-
-        @Override
-        public void setNBTitleClickable(boolean clickable, int arrow) {
-
-        }
-
-        @Override
-        public void setNBLeftBtn(String imageUrl, String text) {
-
-        }
-
-        @Override
-        public void hideNBLeftBtn() {
-
-        }
-
-        @Override
-        public void setNBRightBtn(int which, String imageUrl, String text) {
-
-        }
-
-        @Override
-        public void hideNBRightBtn(int which) {
-
-        }
-
-        @Override
-        public View getNBRoot() {
-            return null;
+            if (mHudDialog != null && mHudDialog.isShowing()) {
+                mHudDialog.dismiss();
+            }
         }
 
         @Override
         public void handleError(String description, String failingUrl) {
-
+            L.d(HybridConstants.TAG, "handleError description=%s , failingUrl=%s", description, failingUrl);
+            mErrorContentView.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void handleFinish(String url) {
-
+            L.d(HybridConstants.TAG, "handleFinish", url);
         }
 
         @Override
         public void handleProgressChanged(int newProgress) {
-
+            L.d(HybridConstants.TAG, "handleProgressChanged newProgress=%s", newProgress);
+            mProgressBar.setProgress(newProgress);
+            if (newProgress == 100) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+            } else {
+                if (mProgressBar.getVisibility() == View.INVISIBLE)
+                    mProgressBar.setVisibility(View.VISIBLE);
+            }
         }
+
+        @Override
+        public void setTitleBarVisibility(boolean visible) {
+            mTitleBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+
+        @Override
+        public void setTitleBarBackVisibility(boolean visible) {
+            mTitleBar.setBackVisibility(visible);
+        }
+
+        @Override
+        public void setTitleBarCloseVisibility(boolean visible) {
+            mTitleBar.setCloseVisibility(visible);
+        }
+
+        @Override
+        public void setTitleBarLeftBtn(String imageUrl, String text) {
+            mTitleBar.setLeftBtn(imageUrl, text);
+        }
+
+        @Override
+        public void hideTitleBarLeftButton() {
+            mTitleBar.hideLeftButton();
+        }
+
+        @Override
+        public void setTitleBarRightBtn(int which, String imageUrl, String text) {
+            mTitleBar.setRightBtn(which, imageUrl, text);
+        }
+
+        @Override
+        public void hideTitleBarRightButtons() {
+            mTitleBar.hideRightButtons();
+        }
+
+        @Override
+        public void hideTitleBarRightButton(int which) {
+            mTitleBar.hideRightButton(which);
+        }
+
+        @Override
+        public void setTitle(String title) {
+            mTitleBar.setTitle(title);
+        }
+
+        @Override
+        public void setSubTitle(String subTitle) {
+            mTitleBar.setSubTitle(subTitle);
+        }
+
     };
 
 }

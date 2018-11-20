@@ -1,6 +1,5 @@
 package com.min.hybrid.util;
 
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -17,7 +16,7 @@ import android.view.View;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.min.hybrid.library.R;
+import com.min.hybrid.R;
 
 import java.util.List;
 import java.util.Map;

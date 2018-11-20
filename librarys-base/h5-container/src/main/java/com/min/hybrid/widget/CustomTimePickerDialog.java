@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 
-import com.min.hybrid.library.R;
+import com.min.hybrid.R;
 
 /**
  * Created by minych on 18-2-28.

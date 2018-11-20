@@ -7,7 +7,7 @@ import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.min.hybrid.library.BuildConfig;
+import com.min.hybrid.BuildConfig;
 
 public class HybridWebView extends WebView {
 

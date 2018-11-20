@@ -11,7 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-import com.min.hybrid.library.R;
+import com.min.hybrid.R;
+
 
 public class WebViewProgressBar extends View {
 

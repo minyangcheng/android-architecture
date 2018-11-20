@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.min.hybrid.library.R;
+import com.min.hybrid.R;
 
 import java.lang.reflect.Field;
 
