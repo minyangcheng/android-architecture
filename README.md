@@ -6,7 +6,7 @@
 
 1. 工具库common-util
 2. UI库common-widget
-3. 核心通用功能core-basics
+3. 核心通用功能core-basics,包含一些通用基类,数据加载类等
 4. H5容器h5-container(了解此库:<https://github.com/minyangcheng/fit-hybrid>)
 5. Weex容器weex-container(了解此库:<https://github.com/minyangcheng/fit-we>)
 
@@ -19,25 +19,32 @@
 ### 主工程(app)
 该层一般放置项目非通用性功能,页面流程组织代码
 
-### mvp
+### MVP
 业务module和主工程采用mvp模式进行开发
 
 ### 三端路由统一
-> 路由系统采用开源库:<https://github.com/drakeet/Floo>
 
-定义跳转协议:scheme://host/path?params"
-1. scheme采用公司名称拼音首写字母
-2. host采用模块名称
-3. path模块内部页面名称
-4. params为传参
+定义跳转协议:`scheme://host/path?params`
+* scheme表示公司名称拼音首写字母组合
 
-例如: cg://order/main?userId="123"&from="b" -> 跳转到order模块钟的main页面,参数userId="123"&from="b"
+* host表示在哪一端区寻找路由对应的页面
+1. native:打开native端路由对应的页面
+2. h5:打开h5端对应的页面
+3. weex:打开weex端路由对应的页面
+4. auto:优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面
+
+* path模块内部页面名称
+
+* params为传参
+
+例如: 
+1. `cg://native/order/MainPage?userId="123"&from="b"` ---> 跳转到native端order模块中的MainPage页面,参数userId="123"&from="b"
+2. `cg://weex/main/SapmlePaeg?userId="123"&from="b"` ---> 跳转到weex端main文件夹下的SapmlePaeg页面,参数userId="123"&from="b"
+3. `cg://h5/main/SapmlePaeg?userId="123"&from="b"` ---> 跳转到h5端main文件夹下的SapmlePaeg页面,参数userId="123"&from="b"
+4. `cg://auto/main/SapmlePaeg?userId="123"&from="b"` ---> 优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面,参数userId="123"&from="b"
+
 
 ### 多人开发
 
 1. 在多人进行具体业务开发的时候,设置gradle.properties文件中的`isBuildModule=true`,让业务层的module和主工程可以单独打包测试,这样不仅可以方便多人开发,也可以让打包速度加快.
 2. 在需要测试主工程的时候,设置gradle.properties文件中的`isBuildModule=false`,即可测试整体项目.
-
-
-
-
