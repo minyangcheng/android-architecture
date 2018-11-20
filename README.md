@@ -13,8 +13,8 @@
 ### 业务层(librarys-business)
 该层一般放置一些多项目通用业务库,能够单独打包进行测试
 
-1. 订单order
-2. 支付pay
+1. 订单order库
+2. 支付pay库
 
 ### 主工程(app)
 该层一般放置项目非通用性功能,页面流程组织代码
@@ -33,16 +33,15 @@
 3. weex:打开weex端路由对应的页面
 4. auto:优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面
 
-* path模块内部页面名称
+* path模块内部页面名称,当native\h5\weex端路径相同的时候,即可动态替换界面
 
 * params为传参
 
 例如: 
 1. `cg://native/order/MainPage?userId="123"&from="b"` ---> 跳转到native端order模块中的MainPage页面,参数userId="123"&from="b"
-2. `cg://weex/main/SapmlePaeg?userId="123"&from="b"` ---> 跳转到weex端main文件夹下的SapmlePaeg页面,参数userId="123"&from="b"
-3. `cg://h5/main/SapmlePaeg?userId="123"&from="b"` ---> 跳转到h5端main文件夹下的SapmlePaeg页面,参数userId="123"&from="b"
-4. `cg://auto/main/SapmlePaeg?userId="123"&from="b"` ---> 优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面,参数userId="123"&from="b"
-
+2. `cg://weex/main/SamplePage?userId="123"&from="b"` ---> 跳转到weex端main文件夹下的SapmlePage页面,参数userId="123"&from="b"
+3. `cg://h5/main/SamplePage?userId="123"&from="b"&host="www.cg.com"` ---> 在h5端打开`http://www.cg.com/main/SamplePage?userId="123"&from="b"`页面
+4. `cg://auto/main/SamplePage?userId="123"&from="b"` ---> 优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面,参数userId="123"&from="b"
 
 ### 多人开发
 
