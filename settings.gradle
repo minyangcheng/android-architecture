@@ -1,3 +1,3 @@
 include ':app'
-include ':librarys-base:common-util', ':librarys-base:common-widget', ':librarys-base:core-basics',':librarys-base:h5-container'
+include ':librarys-base:common-util', ':librarys-base:common-widget', ':librarys-base:core-basics',':librarys-base:h5-container',':librarys-base:router'
 include ':librarys-business:order'

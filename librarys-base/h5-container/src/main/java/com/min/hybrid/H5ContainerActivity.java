@@ -1,8 +1,9 @@
 package com.min.hybrid;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -43,18 +44,11 @@ public class H5ContainerActivity extends AppCompatActivity {
 
     private HudDialog mHudDialog;
 
-    public static void startActivity(Context context, String url) {
-        Intent intent = new Intent(context, H5ContainerActivity.class);
-        Route data = new Route(url);
-        intent.putExtra(HybridConstants.KEY_ROUTE, data);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_h5_container);
-        getDataFromIntent(savedInstanceState);
+        getRoute(savedInstanceState);
         EventUtil.register(this);
         findView();
         initView();
@@ -64,11 +58,44 @@ public class H5ContainerActivity extends AppCompatActivity {
         moduleInstance.setWebViewHandler(mWebViewHandler);
     }
 
-    public void getDataFromIntent(Bundle savedInstanceState) {
+    public void getRoute(Bundle savedInstanceState) {
         if (savedInstanceState != null && savedInstanceState.containsKey(HybridConstants.KEY_ROUTE)) {
             mRoute = (Route) savedInstanceState.getSerializable(HybridConstants.KEY_ROUTE);
         } else if (getIntent().hasExtra(HybridConstants.KEY_ROUTE)) {
             mRoute = (Route) getIntent().getSerializableExtra(HybridConstants.KEY_ROUTE);
+        }
+        if (mRoute == null) {
+            Uri uri = getIntent().getData();
+            if (uri != null) {
+                String scheme = uri.getQueryParameter("scheme");
+                if (TextUtils.isEmpty(scheme)) {
+                    scheme = "http";
+                }
+                String host = uri.getQueryParameter("host");
+                String path = uri.getPath();
+                String query = uri.getQuery();
+
+                mRoute = new Route();
+                if (TextUtils.isEmpty(path)) {
+                    mRoute.pageUrl = scheme + "://" + host + "?" + query;
+                } else {
+                    mRoute.pageUrl = scheme + "://" + host + "/" + path + "?" + query;
+                }
+
+                String pageStyle = uri.getQueryParameter("pageStyle");
+                if (!TextUtils.isEmpty(pageStyle)) {
+                    mRoute.pageStyle = Integer.valueOf(pageStyle);
+                }
+                String orientation = uri.getQueryParameter("orientation");
+                if (!TextUtils.isEmpty(orientation)) {
+                    mRoute.orientation = Integer.valueOf(orientation);
+                }
+                mRoute.title = uri.getQueryParameter("title");
+                String showBackBtn = uri.getQueryParameter("showBackBtn");
+                if (!TextUtils.isEmpty(showBackBtn)) {
+                    mRoute.showBackBtn = Boolean.valueOf(showBackBtn);
+                }
+            }
         }
     }
 
@@ -178,6 +205,7 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("WrongConstant")
     private void setRouteData() {
         if (mRoute != null) {
             if (mRoute.orientation >= ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED && mRoute.orientation <= ActivityInfo.SCREEN_ORIENTATION_LOCKED) {
@@ -198,7 +226,8 @@ public class H5ContainerActivity extends AppCompatActivity {
             Toast.makeText(this, "请求参数错误", Toast.LENGTH_SHORT).show();
             finish();
         }
-        L.d(HybridConstants.TAG, "loadUrl=%s", mRoute.pageUrl);
+        L.d(HybridConstants.TAG, "loadUrl source url: %s", getIntent().getData().toString());
+        L.d(HybridConstants.TAG, "loadUrl dist url: %s ", mRoute.pageUrl);
         mWebView.loadUrl(mRoute.pageUrl);
     }
 

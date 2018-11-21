@@ -15,7 +15,7 @@ import com.min.core.base.BaseActivity;
 import com.min.core.base.BaseDialog;
 import com.min.core.base.BasePopupWindow;
 import com.min.core.util.GsonUtil;
-import com.min.hybrid.H5ContainerActivity;
+import com.min.router.GlobalRouter;
 import com.min.sample.R;
 import com.min.sample.data.local.db.delegate.SearchDaoDelegate;
 import com.min.sample.data.model.SearchBean;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import me.drakeet.floo.Floo;
 
 public class MainActivity extends BaseActivity {
 
@@ -59,7 +58,8 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btn_order)
     void clickOpenOrder() {
-        Floo.navigation(getContext(), "cg://cheguo.com/order")
+        GlobalRouter.getInstance()
+                .navigation("cg://native.com/order/OrderMainPage")
                 .appendQueryParameter("company_name", "cheguo")
                 .appendQueryParameter("user_id", "minych")
                 .putExtra("isLogin", true)
@@ -68,7 +68,12 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btn_web)
     void clickOpenWeb() {
-        H5ContainerActivity.startActivity(this, "http://10.10.12.170:8080");
+        GlobalRouter.getInstance()
+                .navigation("cg://h5.com")
+                .appendQueryParameter("company_name", "cheguo")
+                .appendQueryParameter("host", "www.baidu.com")
+                .appendQueryParameter("scheme", "http")
+                .start();
     }
 
     @OnClick(R.id.btn_popwin)

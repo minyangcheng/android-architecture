@@ -24,24 +24,26 @@
 
 ### 三端路由统一
 
+> 有些模块适合用native书写,如视频聊天界面;有些适合用weex写,如一些订单列表\发起订单界面界面;有些适合用h5书写,如一些广告\协议\推广界面
+
 定义跳转协议:`scheme://host/path?params`
 * scheme表示公司名称拼音首写字母组合
 
 * host表示在哪一端区寻找路由对应的页面
-1. native:打开native端路由对应的页面
-2. h5:打开h5端对应的页面
-3. weex:打开weex端路由对应的页面
-4. auto:优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面
+1. native.com:打开native端路由对应的页面
+2. h5.com:打开h5端对应的页面
+3. weex.com:打开weex端路由对应的页面
+4. auto.com:优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面
 
 * path模块内部页面名称,当native\h5\weex端路径相同的时候,即可动态替换界面
 
 * params为传参
 
 例如: 
-1. `cg://native/order/MainPage?userId="123"&from="b"` ---> 跳转到native端order模块中的MainPage页面,参数userId="123"&from="b"
-2. `cg://weex/main/SamplePage?userId="123"&from="b"` ---> 跳转到weex端main文件夹下的SapmlePage页面,参数userId="123"&from="b"
-3. `cg://h5/main/SamplePage?userId="123"&from="b"&host="www.cg.com"` ---> 在h5端打开`http://www.cg.com/main/SamplePage?userId="123"&from="b"`页面
-4. `cg://auto/main/SamplePage?userId="123"&from="b"` ---> 优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面,参数userId="123"&from="b"
+1. `cg://native.com/order/MainPage?userId="123"&from="b"` ---> 跳转到native端order模块中的MainPage页面,参数userId="123"&from="b"
+2. `cg://weex.com/main/SamplePage?userId="123"&from="b"` ---> 跳转到weex端main文件夹下的SapmlePage页面,参数userId="123"&from="b"
+3. `cg://h5.com/main/SamplePage?userId="123"&from="b"&host="www.cg.com"` ---> 在h5端打开`http://www.cg.com/main/SamplePage?userId="123"&from="b"`页面
+4. `cg://auto.com/main/SamplePage?userId="123"&from="b"` ---> 优先在weex端寻找对应页面,找不到再去native端寻找,找不到在h5端打开页面,参数userId="123"&from="b"
 
 ### 多人开发
 

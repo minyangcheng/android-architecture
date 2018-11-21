@@ -13,13 +13,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
-                    android:host="cheguo.com"
-                    android:path="/order"
+                    android:host="native.com"
+                    android:path="/order/OrderMainPage"
                     android:scheme="cg" />
             </intent-filter>
         </activity>

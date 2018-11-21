@@ -20,7 +20,7 @@ public class Route implements Serializable {
      * 1：竖屏（默认）
      * 2:跟随用户设置
      */
-    public int orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+    public int orientation = 1;
 
     public String title;
 

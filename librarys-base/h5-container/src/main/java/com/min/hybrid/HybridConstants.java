@@ -6,7 +6,7 @@ package com.min.hybrid;
 
 public class HybridConstants {
 
-    public static final String TAG = "hybrid_log";
+    public static final String TAG = "FitHybrid";
 
     public static final String BRIDGE_SCHEME = "QuickHybridJSBridge";
 

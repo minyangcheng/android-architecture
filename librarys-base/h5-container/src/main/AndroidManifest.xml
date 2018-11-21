@@ -10,8 +10,11 @@
             android:name="com.min.hybrid.H5ContainerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
-                <action android:name="open.hybrid.activity" />
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="h5.com"
+                    android:scheme="cg" />
             </intent-filter>
         </activity>
     </application>

@@ -134,6 +134,7 @@ dependencies {
 
     compile project(':librarys-base:h5-container')
     compile project(':librarys-base:core-basics')
+    compile project(':librarys-base:router')
     if(!isBuildModule.toBoolean()){
         compile project(':librarys-business:order')
     }

@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.min.core.base.BaseActivity;
 import com.min.common.widget.CenterTitleToolbar;
+import com.min.core.base.BaseActivity;
 
 import butterknife.BindView;
 
@@ -27,7 +27,7 @@ public class MainOrderActivity extends BaseActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        if(intent.getData()!=null){
+        if (intent.getData() != null) {
             Bundle bundle = intent.getExtras();
             mExtrasTv.append("extras:\n\n");
             for (String key : bundle.keySet()) {
@@ -42,6 +42,7 @@ public class MainOrderActivity extends BaseActivity {
     }
 
     private void initView() {
+        initToolbar(mToolbar);
         mToolbar.setTitle("订单首页");
     }
 
