@@ -8,28 +8,31 @@ android {
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.2"
+        ndk {
+            abiFilters "x86"
+            abiFilters "armeabi"
+        }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile(rootProject.ext.dependencies["espresso-core"], {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.dependencies["junit"]
-
     compile rootProject.ext.dependencies["support-v4"]
     compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["recyclerview-v7"]
 
-    compile 'com.blankj:utilcode:1.21.2'
+    compile rootProject.ext.dependencies["eventbus"]
+    compile rootProject.ext.dependencies["okhttp"]
+    compile rootProject.ext.dependencies["universal-image-loader"]
+
+    compile 'com.taobao.android:weex_sdk:0.18.0'
+    compile 'com.alibaba:fastjson:1.1.46.android'
+
+    compile 'com.baoyz.actionsheet:library:1.1.7'
+    compile('io.socket:socket.io-client:1.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 }

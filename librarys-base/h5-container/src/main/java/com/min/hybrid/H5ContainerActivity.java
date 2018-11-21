@@ -77,24 +77,24 @@ public class H5ContainerActivity extends AppCompatActivity {
 
                 mRoute = new Route();
                 if (TextUtils.isEmpty(path)) {
-                    mRoute.pageUrl = scheme + "://" + host + "?" + query;
+                    mRoute.pageUri = scheme + "://" + host + "?" + query;
                 } else {
-                    mRoute.pageUrl = scheme + "://" + host + "/" + path + "?" + query;
+                    mRoute.pageUri = scheme + "://" + host + "/" + path + "?" + query;
                 }
 
-                String pageStyle = uri.getQueryParameter("pageStyle");
-                if (!TextUtils.isEmpty(pageStyle)) {
-                    mRoute.pageStyle = Integer.valueOf(pageStyle);
+                String showNavigationBar = uri.getQueryParameter("showNavigationBar");
+                if (!TextUtils.isEmpty(showNavigationBar)) {
+                    mRoute.showNavigationBar = Boolean.valueOf(showNavigationBar);
                 }
-                String orientation = uri.getQueryParameter("orientation");
-                if (!TextUtils.isEmpty(orientation)) {
-                    mRoute.orientation = Integer.valueOf(orientation);
-                }
-                mRoute.title = uri.getQueryParameter("title");
                 String showBackBtn = uri.getQueryParameter("showBackBtn");
                 if (!TextUtils.isEmpty(showBackBtn)) {
                     mRoute.showBackBtn = Boolean.valueOf(showBackBtn);
                 }
+                String screenOrientation = uri.getQueryParameter("screenOrientation");
+                if (!TextUtils.isEmpty(screenOrientation)) {
+                    mRoute.screenOrientation = Integer.valueOf(screenOrientation);
+                }
+                mRoute.title = uri.getQueryParameter("title");
             }
         }
     }
@@ -208,13 +208,13 @@ public class H5ContainerActivity extends AppCompatActivity {
     @SuppressLint("WrongConstant")
     private void setRouteData() {
         if (mRoute != null) {
-            if (mRoute.orientation >= ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED && mRoute.orientation <= ActivityInfo.SCREEN_ORIENTATION_LOCKED) {
-                setRequestedOrientation(mRoute.orientation);
+            if (mRoute.screenOrientation >= ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED && mRoute.screenOrientation <= ActivityInfo.SCREEN_ORIENTATION_LOCKED) {
+                setRequestedOrientation(mRoute.screenOrientation);
             }
             if (!TextUtils.isEmpty(mRoute.title)) {
                 mTitleBar.setTitle(mRoute.title);
             }
-            if (mRoute.pageStyle == -1) {
+            if (!mRoute.showNavigationBar) {
                 mTitleBar.setVisibility(View.GONE);
             }
         }
@@ -222,13 +222,13 @@ public class H5ContainerActivity extends AppCompatActivity {
     }
 
     private void loadUrl() {
-        if (mRoute == null || TextUtils.isEmpty(mRoute.pageUrl)) {
+        if (mRoute == null || TextUtils.isEmpty(mRoute.pageUri)) {
             Toast.makeText(this, "请求参数错误", Toast.LENGTH_SHORT).show();
             finish();
         }
         L.d(HybridConstants.TAG, "loadUrl source url: %s", getIntent().getData().toString());
-        L.d(HybridConstants.TAG, "loadUrl dist url: %s ", mRoute.pageUrl);
-        mWebView.loadUrl(mRoute.pageUrl);
+        L.d(HybridConstants.TAG, "loadUrl dist url: %s ", mRoute.pageUri);
+        mWebView.loadUrl(mRoute.pageUri);
     }
 
     public void backPress(String eventType) {

@@ -1,0 +1,8 @@
+{
+    "$navigator": "com.fit.we.library.extend.module.NavigatorModule",
+    "$router": "com.fit.we.library.extend.module.RouterModule",
+    "$event": "com.fit.we.library.extend.module.EventModule",
+    "$tool": "com.fit.we.library.extend.module.ToolModule",
+    "$ui": "com.fit.we.library.extend.module.UiModule",
+    "InputEditText": "com.fit.we.library.extend.compontent.InputEditText"
+}

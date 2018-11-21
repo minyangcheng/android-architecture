@@ -42,7 +42,7 @@ public class GlobalRouter {
                 .setDebugEnabled(debug)
                 .addRequestInterceptor(new LogInterceptor("Request"))
                 .addTargetInterceptor(new LogInterceptor("Target"))
-//                .addTargetNotFoundHandler(new WeexHandler())
+                .addTargetNotFoundHandler(new WeexHandler())
                 .addTargetNotFoundHandler(new NativeHandler())
                 .addTargetNotFoundHandler(new H5Handler());
     }

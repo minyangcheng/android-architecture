@@ -1,5 +1,8 @@
 <resources>
 
+    <style name="FitHybridTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
     <style name="HudStyle" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

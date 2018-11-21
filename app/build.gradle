@@ -133,6 +133,7 @@ dependencies {
     debugCompile rootProject.ext.dependencies["stetho"]
 
     compile project(':librarys-base:h5-container')
+    compile project(':librarys-base:weex-container')
     compile project(':librarys-base:core-basics')
     compile project(':librarys-base:router')
     if(!isBuildModule.toBoolean()){

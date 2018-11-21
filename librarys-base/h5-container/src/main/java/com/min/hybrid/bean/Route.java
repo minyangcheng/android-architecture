@@ -2,38 +2,79 @@ package com.min.hybrid.bean;
 
 import android.content.pm.ActivityInfo;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.Serializable;
 
 public class Route implements Serializable {
 
-    public String pageUrl;
+    public boolean showNavigationBar = true;
 
-    /**
-     * -1:不加载导航栏
-     * 1：默认类型
-     * 2：搜索导航栏
-     */
-    public int pageStyle = 1;
-
-    /**
-     * 0：横屏
-     * 1：竖屏（默认）
-     * 2:跟随用户设置
-     */
-    public int orientation = 1;
+    public boolean showBackBtn = true;
 
     public String title;
 
-    /**
-     * 默认显示返回键
-     */
-    public boolean showBackBtn = true;
+    public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-    public Route(){
+    public String pageUri;
+
+    public JSONObject paramData;
+
+    public Route() {
     }
 
-    public Route(String pageUrl) {
-        this.pageUrl = pageUrl;
+    public boolean isShowNavigationBar() {
+        return showNavigationBar;
+    }
+
+    public Route setShowNavigationBar(boolean showNavigationBar) {
+        this.showNavigationBar = showNavigationBar;
+        return this;
+    }
+
+    public boolean isShowBackBtn() {
+        return showBackBtn;
+    }
+
+    public Route setShowBackBtn(boolean showBackBtn) {
+        this.showBackBtn = showBackBtn;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Route setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public int getScreenOrientation() {
+        return screenOrientation;
+    }
+
+    public Route setScreenOrientation(int screenOrientation) {
+        this.screenOrientation = screenOrientation;
+        return this;
+    }
+
+    public String getPageUri() {
+        return pageUri;
+    }
+
+    public Route setPageUri(String pageUri) {
+        this.pageUri = pageUri;
+        return this;
+    }
+
+    public JSONObject getParamData() {
+        return paramData;
+    }
+
+    public Route setParamData(JSONObject paramData) {
+        this.paramData = paramData;
+        return this;
     }
 
 }

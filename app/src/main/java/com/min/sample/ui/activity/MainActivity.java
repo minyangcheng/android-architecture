@@ -66,6 +66,16 @@ public class MainActivity extends BaseActivity {
                 .start();
     }
 
+    @OnClick(R.id.btn_weex)
+    void clickOpenWeex() {
+        GlobalRouter.getInstance()
+                .navigation("cg://weex.com/page/SamplePage")
+                .appendQueryParameter("company_name", "cheguo")
+                .appendQueryParameter("user_id", "minych")
+                .putExtra("isLogin", true)
+                .start();
+    }
+
     @OnClick(R.id.btn_web)
     void clickOpenWeb() {
         GlobalRouter.getInstance()
