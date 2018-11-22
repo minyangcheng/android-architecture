@@ -16,6 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:text="welcome fit-we sample"/>
+        android:text="welcome android-architecture sample"/>
 
 </LinearLayout>
