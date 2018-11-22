@@ -3,10 +3,10 @@ package com.fit.we.library;
 import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import com.fit.we.library.resource.CheckApiHandler;
 import com.fit.we.library.util.SharePreferenceUtil;
-import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class FitConfiguration {
     private Application application;
     private String fitWeServer;
     private CheckApiHandler checkApiHandler;
-    private IWXImgLoaderAdapter imageAdapter;
+    private FitWeImageLoader imageLoader;
     private Map<String, String> nativeParams = new HashMap<>();
     private boolean debug;
 
@@ -75,14 +75,6 @@ public class FitConfiguration {
         return nativeParams;
     }
 
-    public IWXImgLoaderAdapter getImageAdapter() {
-        return imageAdapter;
-    }
-
-    public void setImageAdapter(IWXImgLoaderAdapter imageAdapter) {
-        this.imageAdapter = imageAdapter;
-    }
-
     public boolean isDebug() {
         return debug;
     }
@@ -90,5 +82,18 @@ public class FitConfiguration {
     public FitConfiguration setDebug(boolean debug) {
         this.debug = debug;
         return this;
+    }
+
+    public FitConfiguration setImageLoader(FitWeImageLoader imageLoader) {
+        this.imageLoader = imageLoader;
+        return this;
+    }
+
+    public FitWeImageLoader getImageLoader() {
+        return imageLoader;
+    }
+
+    public interface FitWeImageLoader {
+        void loadImage(ImageView view, String url);
     }
 }

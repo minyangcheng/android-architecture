@@ -19,39 +19,70 @@ import java.io.File;
  */
 public class ImageLoaderWrap {
 
-    public static void init(Context context,boolean debug){
+    public static void init(Context context, boolean debug) {
         ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(context.getApplicationContext())
                 .threadPoolSize(5)
-                .threadPriority(Thread.NORM_PRIORITY-1)
+                .threadPriority(Thread.NORM_PRIORITY - 1)
                 .diskCacheSize(50 * 1024 * 1024)
                 .tasksProcessingOrder(QueueProcessingType.LIFO);
-        if(debug){
+        if (debug) {
             builder.writeDebugLogs();
         }
-        ImageLoaderConfiguration config=builder.build();
+        ImageLoaderConfiguration config = builder.build();
         ImageLoader.getInstance().init(config);
     }
 
-    public static void displayHttpImage(String url,ImageView imageView){
-        displayImage(url,imageView,null);
+    public static void displayImage(ImageView view, String uri) {
+        if (uri.startsWith("http")) {
+            ImageLoaderWrap.displayHttpImage(uri, view);
+        } else {
+            ImageLoaderWrap.displayFileImageWithNoCache(new File(uri), view);
+        }
     }
 
-    public static void displayDrawableImage(int drawableId,ImageView imageView){
-        String url="drawable://"+drawableId;
-        displayImage(url,imageView,null);
+    public static void displayHttpImage(String url, ImageView imageView) {
+        displayImage(url, imageView, null);
     }
 
-    public static void displayFileImage(File file, ImageView imageView){
-        String filePath=(file==null)?"":file.getAbsolutePath();
-        String url="file://"+filePath;
-        displayImage(url,imageView,null);
+    public static void displayDrawableImage(int drawableId, ImageView imageView) {
+        String url = "drawable://" + drawableId;
+        displayImage(url, imageView, null);
     }
 
-    private static void displayImage(String url,ImageView imageView,DisplayImageOptions displayImageOptions){
+    public static void displayFileImage(File file, ImageView imageView) {
+        String filePath = (file == null) ? "" : file.getAbsolutePath();
+        String url = "file://" + filePath;
+        displayImage(url, imageView, null);
+    }
+
+    public static void displayFileImageWithNoCache(File file, ImageView imageView) {
+        String filePath = (file == null) ? "" : file.getAbsolutePath();
+        String url = "file://" + filePath;
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(false)
+                .cacheOnDisk(false)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .build();
+        displayImage(url, imageView, options);
+    }
+
+    private static void displayImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions) {
         ImageLoader.getInstance().displayImage(url, imageView, displayImageOptions == null ? getDisplayImageOptions() : displayImageOptions);
     }
 
-    public static void loadImage(String url, final ImageLoadListener loadListener){
+    public static DisplayImageOptions getDisplayImageOptions() {
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .delayBeforeLoading(50)
+                .considerExifParams(true)
+                .build();
+        return options;
+    }
+
+    public static void loadImage(String url, final ImageLoadListener loadListener) {
         ImageLoader.getInstance().loadImage(url, getDisplayImageOptions(), new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -81,16 +112,6 @@ public class ImageLoaderWrap {
                 }
             }
         });
-    }
-
-    public static DisplayImageOptions getDisplayImageOptions(){
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .delayBeforeLoading(50)
-                .build();
-        return options;
     }
 
     public interface ImageLoadListener {

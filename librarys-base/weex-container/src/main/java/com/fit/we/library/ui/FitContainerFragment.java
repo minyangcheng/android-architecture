@@ -18,7 +18,7 @@ import com.fit.we.library.extend.weex.IWeexHandler;
 import com.fit.we.library.extend.weex.LongCallbackHandler;
 import com.fit.we.library.extend.weex.WeexProxy;
 import com.fit.we.library.widget.HudDialog;
-import com.fit.we.library.widget.NavigationBar;
+import com.min.common.widget.TitleBar;
 
 /**
  * Created by minyangcheng on 2018/4/1.
@@ -29,7 +29,7 @@ public class FitContainerFragment extends Fragment {
     private Route mRoute;
 
     private FrameLayout mContainerView;
-    private NavigationBar mNavigationBar;
+    private TitleBar mTitleBar;
 
     private HudDialog mHudDialog;
 
@@ -52,7 +52,7 @@ public class FitContainerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_container, container, false);
         mContainerView = (FrameLayout) view.findViewById(R.id.view_container);
-        mNavigationBar = (NavigationBar) view.findViewById(R.id.view_nb);
+        mTitleBar = (TitleBar) view.findViewById(R.id.view_nb);
         initView();
         mWeexProxy = new WeexProxy(getActivity(), mRoute, mWeexHandler);
         mWeexProxy.onCreate(mContainerView);
@@ -61,42 +61,43 @@ public class FitContainerFragment extends Fragment {
     }
 
     private void initView() {
-        mNavigationBar.setOnNavigationBarListener(new NavigationBar.INbOnClick() {
+        mTitleBar.setTitleBarListener(new TitleBar.TitleBarListener() {
             @Override
-            public void onNbBack() {
+            public void onClickBack() {
                 mWeexProxy.onBackPressed(LongCallbackHandler.OnClickNbBack);
             }
 
             @Override
-            public void onNbLeft(View view) {
-                if (view.getTag() != null && "close".equals(view.getTag().toString())) {
-                    onNbBack();
-                } else {
-                    mWeexProxy.getLongCallbackHandler().onClickNbLeft();
-                }
+            public void onClickClose() {
+                mWeexProxy.onBackPressed(LongCallbackHandler.OnClickNbBack);
             }
 
             @Override
-            public void onNbRight(View view, int which) {
+            public void onClickLeft() {
+                mWeexProxy.getLongCallbackHandler().onClickNbLeft();
+            }
+
+            @Override
+            public void onClickTitle() {
+                mWeexProxy.getLongCallbackHandler().onClickNbTitle();
+            }
+
+            @Override
+            public void onClickRight(View view, int which) {
                 mWeexProxy.getLongCallbackHandler().onClickNbRight(which);
-            }
-
-            @Override
-            public void onNbTitle(View view) {
-                mWeexProxy.getLongCallbackHandler().onClickNbTitle(0);
             }
         });
         if (!mRoute.isShowBackBtn()) {
-            mNavigationBar.hideNbBack();
+            mTitleBar.setBackVisibility(false);
         }
         if (mRoute.getScreenOrientation() >= ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED && mRoute.getScreenOrientation() <= ActivityInfo.SCREEN_ORIENTATION_LOCKED) {
             getActivity().setRequestedOrientation(mRoute.getScreenOrientation());
         }
         if (!TextUtils.isEmpty(mRoute.getTitle())) {
-            mNavigationBar.setNbTitle(mRoute.getTitle());
+            mTitleBar.setTitle(mRoute.getTitle());
         }
         if (!mRoute.isShowNavigationBar()) {
-            mNavigationBar.hide();
+            mTitleBar.setVisibility(View.GONE);
         }
     }
 
@@ -182,57 +183,55 @@ public class FitContainerFragment extends Fragment {
         }
 
         @Override
-        public void setNBVisibility(boolean visible) {
-            if (visible) {
-                mNavigationBar.show();
-            } else {
-                mNavigationBar.hide();
-            }
+        public void setTitleBarVisibility(boolean visible) {
+            mTitleBar.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
 
         @Override
-        public void setNBBackBtnVisibility(boolean visible) {
-            if (visible) {
-                mNavigationBar.showNbBack();
-            } else {
-                mNavigationBar.hideNbBack();
-            }
+        public void setTitleBarBackVisibility(boolean visible) {
+            mTitleBar.setBackVisibility(visible);
         }
 
         @Override
-        public void setNBTitle(String title, String subTitle) {
-            mNavigationBar.setNbTitle(title);
+        public void setTitleBarCloseVisibility(boolean visible) {
+            mTitleBar.setCloseVisibility(visible);
         }
 
         @Override
-        public void setNBTitleClickable(boolean clickable, int arrow) {
-            mNavigationBar.setTitleClickable(clickable, arrow);
+        public void setTitleBarLeftBtn(String imageUrl, String text) {
+            mTitleBar.setLeftBtn(imageUrl, text);
         }
 
         @Override
-        public void setNBLeftBtn(String imageUrl, String text) {
-            mNavigationBar.setLeftBtn(imageUrl, text);
+        public void hideTitleBarLeftButton() {
+            mTitleBar.hideLeftButton();
         }
 
         @Override
-        public void hideNBLeftBtn() {
-            mNavigationBar.hideLeftBtn();
+        public void setTitleBarRightBtn(int which, String imageUrl, String text) {
+            mTitleBar.setRightBtn(which, imageUrl, text);
         }
 
         @Override
-        public void setNBRightBtn(int which, String imageUrl, String text) {
-            mNavigationBar.setRightBtn(which, imageUrl, text);
+        public void hideTitleBarRightButtons() {
+            mTitleBar.hideRightButtons();
         }
 
         @Override
-        public void hideNBRightBtn(int which) {
-            mNavigationBar.hideRightBtn(which);
+        public void hideTitleBarRightButton(int which) {
+            mTitleBar.hideRightButton(which);
         }
 
         @Override
-        public View getNBRoot() {
-            return mNavigationBar.getNavigationView();
+        public void setTitle(String title) {
+            mTitleBar.setTitle(title);
         }
+
+        @Override
+        public void setSubTitle(String subTitle) {
+            mTitleBar.setSubTitle(subTitle);
+        }
+
     };
 
 }

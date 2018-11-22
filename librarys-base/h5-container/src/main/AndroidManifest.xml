@@ -8,7 +8,8 @@
     <application>
         <activity
             android:name="com.min.hybrid.H5ContainerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/FitHybridTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

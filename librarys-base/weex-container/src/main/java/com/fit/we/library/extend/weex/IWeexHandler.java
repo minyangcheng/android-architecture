@@ -16,21 +16,23 @@ public interface IWeexHandler {
 
     void hideHudDialog();
 
-    void setNBVisibility(boolean visible);
+    void setTitleBarVisibility(boolean visible);
 
-    void setNBBackBtnVisibility(boolean visible);
+    void setTitleBarBackVisibility(boolean visible);
 
-    void setNBTitle(String title, String subTitle);
+    void setTitleBarCloseVisibility(boolean visible);
 
-    void setNBTitleClickable(boolean clickable, int arrow);
+    void setTitleBarLeftBtn(String imageUrl, String text);
 
-    void setNBLeftBtn(String imageUrl, String text);
+    void hideTitleBarLeftButton();
 
-    void hideNBLeftBtn();
+    void setTitleBarRightBtn(int which, String imageUrl, String text);
 
-    void setNBRightBtn(int which, String imageUrl, String text);
+    void hideTitleBarRightButtons();
 
-    void hideNBRightBtn(int which);
+    void hideTitleBarRightButton(int which);
 
-    View getNBRoot();
+    void setTitle(String title);
+
+    void setSubTitle(String subTitle);
 }

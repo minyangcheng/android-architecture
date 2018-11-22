@@ -8,7 +8,7 @@ public class FitConstants {
 
     public static final String LOG_TAG = "FIT_WE";
 
-    public static final String MODULE_FILE_SUFFIX = "_fit.json";
+    public static final String MODULE_FILE_SUFFIX = "_weex.json";
 
     public static final String KEY_ROUTE = "route";
 

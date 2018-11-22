@@ -20,11 +20,11 @@ import com.fit.we.library.R;
 import com.fit.we.library.util.FileUtil;
 import com.fit.we.library.util.SharePreferenceUtil;
 import com.fit.we.library.util.SignatureUtil;
-import com.fit.we.library.widget.NavigationBar;
+import com.min.common.widget.TitleBar;
 
 public class FitWeDebugActivity extends AppCompatActivity {
 
-    private NavigationBar mNavigationBar;
+    private TitleBar mNavigationBar;
     private EditText mServerEt;
     private Switch mUseLocalFileSwitch;
     private TextView mConfigTv;
@@ -47,28 +47,7 @@ public class FitWeDebugActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        mNavigationBar.setNbTitle("开发设置");
-        mNavigationBar.setOnNavigationBarListener(new NavigationBar.INbOnClick() {
-            @Override
-            public void onNbBack() {
-                finish();
-            }
-
-            @Override
-            public void onNbLeft(View view) {
-
-            }
-
-            @Override
-            public void onNbRight(View view, int which) {
-
-            }
-
-            @Override
-            public void onNbTitle(View view) {
-
-            }
-        });
+        mNavigationBar.setTitle("开发设置");
         mServerEt.setText(FitWe.getInstance().getConfiguration().getFitWeServer());
         mServerEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,7 +76,7 @@ public class FitWeDebugActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAlertDialog("buildConfig", JSON.toJSONString(
-                    SignatureUtil.getBuildConfigJsonObject(FileUtil.getBundleDir(FitWeDebugActivity.this)), true));
+                        SignatureUtil.getBuildConfigJsonObject(FileUtil.getBundleDir(FitWeDebugActivity.this)), true));
             }
         });
         mParamsTv.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +96,7 @@ public class FitWeDebugActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        mNavigationBar = (NavigationBar) findViewById(R.id.view_nb);
+        mNavigationBar = (TitleBar) findViewById(R.id.view_nb);
         mServerEt = (EditText) findViewById(R.id.et_server);
         mUseLocalFileSwitch = (Switch) findViewById(R.id.sw_use_local_file);
         mConfigTv = (TextView) findViewById(R.id.tv_look_config);
@@ -127,14 +106,14 @@ public class FitWeDebugActivity extends AppCompatActivity {
 
     private void showAlertDialog(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                }
-            });
+                    }
+                });
         builder.show();
     }
 

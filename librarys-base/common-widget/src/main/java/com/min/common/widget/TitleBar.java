@@ -31,6 +31,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
 
     private TitleBarListener mListener;
     private TitleBarImageLoader mImageLoader;
+    private String mTitle;
+    private boolean mShowBack;
 
     public TitleBar(@NonNull Context context) {
         this(context, null);
@@ -44,6 +46,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TitleBar, defStyleAttr, 0);
         try {
+            mTitle = typedArray.getString(R.styleable.TitleBar_mainTitle);
+            mShowBack = typedArray.getBoolean(R.styleable.TitleBar_showBack, true);
             String imageLoaderClassName = typedArray.getString(R.styleable.TitleBar_imageLoader);
             if (!TextUtils.isEmpty(imageLoaderClassName)) {
                 mImageLoader = (TitleBarImageLoader) Class.forName(imageLoaderClassName).newInstance();
@@ -59,6 +63,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.layout_title_bar, this);
         findView();
+        setTitle(mTitle);
+        setBackVisibility(mShowBack);
     }
 
     private void findView() {

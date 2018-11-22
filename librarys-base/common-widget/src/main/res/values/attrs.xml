@@ -20,6 +20,8 @@
 
     <declare-styleable name="TitleBar">
         <attr name="imageLoader" format="string|reference" />
+        <attr name="mainTitle" format="string|reference" />
+        <attr name="showBack" format="boolean|reference" />
     </declare-styleable>
 
 </resources>

@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.min.common.widget.CenterTitleToolbar;
+import com.min.common.widget.TitleBar;
 import com.min.core.base.BaseActivity;
 import com.min.core.base.BaseDialog;
 import com.min.core.base.BasePopupWindow;
@@ -28,8 +29,8 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
-    CenterTitleToolbar mToolbar;
+    @BindView(R.id.title_bar)
+    TitleBar mTitleBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +39,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
-        mToolbar.setTitle("架构示例");
-        mToolbar.inflateMenu(R.menu.main);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_setting) {
-                    ToastUtils.showShort("you click setting");
-                }
-                return false;
-            }
-        });
+        mTitleBar.setTitle("架构示例");
     }
 
     @Override
@@ -80,7 +71,7 @@ public class MainActivity extends BaseActivity {
     void clickOpenWeb() {
         GlobalRouter.getInstance()
                 .navigation("cg://h5.com")
-                .appendQueryParameter("company_name", "cheguo")
+                .appendQueryParameter("title", "cheguo")
                 .appendQueryParameter("host", "www.baidu.com")
                 .appendQueryParameter("scheme", "http")
                 .start();
@@ -105,7 +96,7 @@ public class MainActivity extends BaseActivity {
                 return R.layout.popup_example;
             }
         };
-        popupWindow.showAsDropDown(mToolbar);
+        popupWindow.showAsDropDown(mTitleBar);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {

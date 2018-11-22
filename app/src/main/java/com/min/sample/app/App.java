@@ -36,7 +36,13 @@ public class App extends BaseApp {
         FitConfiguration configuration = new FitConfiguration(this)
                 .setDebug(BuildConfig.DEBUG)
                 .setFitWeServer("http://10.10.12.170")
-                .addNativeParam("apiServer", "http://www.cg.com");
+                .addNativeParam("apiServer", "http://www.cg.com")
+                .setImageLoader(new FitConfiguration.FitWeImageLoader() {
+                    @Override
+                    public void loadImage(ImageView view, String url) {
+                        ImageLoaderWrap.displayImage(view,url);
+                    }
+                });
         FitWe.getInstance().init(configuration);
     }
 

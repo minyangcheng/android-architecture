@@ -2,7 +2,6 @@ package com.fit.we.library.extend.module;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -14,13 +13,9 @@ import com.fit.we.library.R;
 import com.fit.we.library.extend.weex.IWeexHandler;
 import com.fit.we.library.extend.weex.WeexHandlerManager;
 import com.fit.we.library.util.DialogUtil;
-import com.fit.we.library.widget.popmenu.FrmPopMenu;
-import com.fit.we.library.widget.popmenu.PopClickListener;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-
-;
 
 public class UiModule extends WXModule {
 
@@ -179,68 +174,24 @@ public class UiModule extends WXModule {
         String[] items = new String[jsonArr.size()];
         items = jsonArr.toArray(items);
         ActionSheet.createBuilder(activity, activity.getSupportFragmentManager())
-            .setCancelButtonTitle(cancelBtnName)
-            .setOtherButtonTitles(items)
-            .setCancelableOnTouchOutside(cancelable)
-            .setListener(new ActionSheet.ActionSheetListener() {
-                @Override
-                public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
-                    JSONObject result = new JSONObject();
-                    result.put("which", -1);
-                    successCallback.invoke(result);
-                }
+                .setCancelButtonTitle(cancelBtnName)
+                .setOtherButtonTitles(items)
+                .setCancelableOnTouchOutside(cancelable)
+                .setListener(new ActionSheet.ActionSheetListener() {
+                    @Override
+                    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
+                        JSONObject result = new JSONObject();
+                        result.put("which", -1);
+                        successCallback.invoke(result);
+                    }
 
-                @Override
-                public void onOtherButtonClick(ActionSheet actionSheet, int index) {
-                    JSONObject result = new JSONObject();
-                    result.put("which", index);
-                    successCallback.invoke(result);
-                }
-            });
-    }
-
-    /**
-     * 弹出顶部选项按钮
-     * iconFilterColor：图标过滤色
-     * titleItems：多个选项用,隔开
-     * iconItems: 图标 多个,隔开
-     * which：点击按钮id
-     */
-    @JSMethod(uiThread = true)
-    public void popWindow(JSONObject params, final JSCallback successCallback, JSCallback errorCallback) {
-        IWeexHandler weexHandler = WeexHandlerManager.getWeexHandler(mWXSDKInstance);
-        if (weexHandler != null) {
-            String iconFilterColor = params.getString("iconFilterColor");
-            JSONArray titleJsonObject = params.getJSONArray("titleItems");
-            JSONArray iconJsonObject = params.getJSONArray("iconItems");
-            if (titleJsonObject == null) {
-                errorCallback.invoke(mWXSDKInstance.getContext().getString(R.string.status_request_error));
-                return;
-            }
-            String[] titleItems = new String[titleJsonObject.size()];
-            String[] iconItems = new String[iconJsonObject.size()];
-            titleItems = titleJsonObject.toArray(titleItems);
-            iconItems = iconJsonObject.toArray(iconItems);
-            if (iconItems != null && titleItems.length != iconItems.length) {
-                errorCallback.invoke(mWXSDKInstance.getContext().getString(R.string.status_request_error));
-                return;
-            }
-
-            int iconColor = 0;
-            if (!TextUtils.isEmpty(iconFilterColor)) {
-                iconColor = Color.parseColor("#" + iconFilterColor);
-            }
-            FrmPopMenu popupWindow = new FrmPopMenu(mWXSDKInstance.getContext(), weexHandler.getNBRoot(), titleItems, iconItems, new PopClickListener() {
-                @Override
-                public void onClick(int index) {
-                    JSONObject data = new JSONObject();
-                    data.put("which", index);
-                    successCallback.invoke(data);
-                }
-            });
-            popupWindow.setIconFilterColor(iconColor);
-            popupWindow.show();
-        }
+                    @Override
+                    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
+                        JSONObject result = new JSONObject();
+                        result.put("which", index);
+                        successCallback.invoke(result);
+                    }
+                });
     }
 
     /**

@@ -5,10 +5,10 @@
     android:background="#fefefe"
     android:orientation="vertical">
 
-    <com.fit.we.library.widget.NavigationBar
+    <com.min.common.widget.TitleBar
         android:id="@+id/view_nb"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="match_parent"

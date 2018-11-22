@@ -1,13 +1,13 @@
 package com.fit.we.library.extend.module;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.fit.we.library.R;
 import com.fit.we.library.extend.weex.IWeexHandler;
+import com.fit.we.library.extend.weex.LongCallbackHandler;
 import com.fit.we.library.extend.weex.WeexHandlerManager;
 import com.fit.we.library.util.DeviceUtil;
-import com.fit.we.library.extend.weex.LongCallbackHandler;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
@@ -21,7 +21,7 @@ public class NavigatorModule extends WXModule {
     public void hide(JSONObject params, JSCallback successCallback, JSCallback errorCallback) {
         IWeexHandler weexHandler = WeexHandlerManager.getWeexHandler(mWXSDKInstance);
         if (weexHandler != null) {
-            weexHandler.setNBVisibility(false);
+            weexHandler.setTitleBarVisibility(false);
             successCallback.invoke(null);
         }
     }
@@ -33,7 +33,7 @@ public class NavigatorModule extends WXModule {
     public void show(JSONObject params, JSCallback successCallback, JSCallback errorCallback) {
         IWeexHandler weexHandler = WeexHandlerManager.getWeexHandler(mWXSDKInstance);
         if (weexHandler != null) {
-            weexHandler.setNBVisibility(true);
+            weexHandler.setTitleBarVisibility(true);
             successCallback.invoke(null);
         }
     }
@@ -65,7 +65,7 @@ public class NavigatorModule extends WXModule {
     public void hideBackBtn(JSONObject params, JSCallback successCallback, JSCallback errorCallback) {
         IWeexHandler weexHandler = WeexHandlerManager.getWeexHandler(mWXSDKInstance);
         if (weexHandler != null) {
-            weexHandler.setNBBackBtnVisibility(false);
+            weexHandler.setTitleBarBackVisibility(false);
             successCallback.invoke(null);
         }
     }
@@ -106,12 +106,9 @@ public class NavigatorModule extends WXModule {
             String title = params.getString("title");
             String subTitle = params.getString("subTitle");
             boolean clickable = "1".equals(params.getIntValue("clickable"));
-            String direction = params.getString("direction");
-            weexHandler.setNBTitle(title, subTitle);
-            if ("bottom".equals(direction)) {
-                weexHandler.setNBTitleClickable(clickable, R.mipmap.img_arrow_black_down);
-            } else {
-                weexHandler.setNBTitleClickable(clickable, R.mipmap.img_arrow_black_up);
+            weexHandler.setTitle(title);
+            if (TextUtils.isEmpty(subTitle)) {
+                weexHandler.setSubTitle(subTitle);
             }
             if (clickable) {
                 weexHandler.getLongCallbackHandler().addJSCallback(LongCallbackHandler.OnClickNbTitle, successCallback);
@@ -136,10 +133,10 @@ public class NavigatorModule extends WXModule {
             String text = params.getString("text");
             String imageUrl = params.getString("imageUrl");
             if (isShow) {
-                weexHandler.setNBRightBtn(which, imageUrl, text);
+                weexHandler.setTitleBarRightBtn(which, imageUrl, text);
                 weexHandler.getLongCallbackHandler().addJSCallback(LongCallbackHandler.OnClickNbRight + which, successCallback);
             } else {
-                weexHandler.hideNBRightBtn(which);
+                weexHandler.hideTitleBarRightButton(which);
                 weexHandler.getLongCallbackHandler().removeJSCallback(LongCallbackHandler.OnClickNbRight + which);
             }
         }
@@ -159,10 +156,10 @@ public class NavigatorModule extends WXModule {
             String text = params.getString("text");
             String imageUrl = params.getString("imageUrl");
             if (isShow) {
-                weexHandler.setNBLeftBtn(imageUrl, text);
+                weexHandler.setTitleBarLeftBtn(imageUrl, text);
                 weexHandler.getLongCallbackHandler().addJSCallback(LongCallbackHandler.OnClickNbLeft, successCallback);
             } else {
-                weexHandler.hideNBLeftBtn();
+                weexHandler.hideTitleBarLeftButton();
                 weexHandler.getLongCallbackHandler().removeJSCallback(LongCallbackHandler.OnClickNbLeft);
             }
         }

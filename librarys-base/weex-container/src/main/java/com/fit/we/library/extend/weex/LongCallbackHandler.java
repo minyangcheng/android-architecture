@@ -30,9 +30,8 @@ public class LongCallbackHandler {
         call(OnClickNbLeft, null);
     }
 
-    public void onClickNbTitle(int which) {
+    public void onClickNbTitle() {
         JSONObject object = new JSONObject();
-        object.put("which", which);
         call(OnClickNbTitle, object);
     }
 

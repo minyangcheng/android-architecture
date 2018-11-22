@@ -2,20 +2,24 @@ package com.fit.we.library;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
+import android.widget.ImageView;
 
-import com.fit.we.library.extend.adapter.ImageAdapter;
 import com.fit.we.library.resource.ResourceCheck;
 import com.fit.we.library.resource.ResourceParse;
 import com.fit.we.library.util.ActivityHandler;
 import com.fit.we.library.util.FitLog;
 import com.fit.we.library.util.FitUtil;
-import com.fit.we.library.util.ImageLoaderWrap;
 import com.fit.we.library.util.LifecycleHandler;
 import com.fit.we.library.util.ModuleLoader;
 import com.fit.we.library.util.SharePreferenceUtil;
+import com.fit.we.library.util.UriHandler;
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKEngine;
+import com.taobao.weex.adapter.IWXImgLoaderAdapter;
+import com.taobao.weex.common.WXImageStrategy;
+import com.taobao.weex.dom.WXImageQuality;
 
 /**
  * Created by minyangcheng on 2018/4/1.
@@ -55,8 +59,11 @@ public class FitWe {
         if (configuration.getFitWeServer() == null) {
             throw new RuntimeException("config hostServer can not be null");
         }
+        if (configuration.getImageLoader() == null) {
+            throw new RuntimeException("config imageLoader can not be null");
+        }
         if (configuration.getCheckApiHandler() == null) {
-            FitLog.d(FitConstants.LOG_TAG,"请注意:未设置更新检测处理,将会导致不会从远程更新最新的包");
+            FitLog.d(FitConstants.LOG_TAG, "请注意:未设置更新检测处理,将会导致不会从远程更新最新的包");
         }
     }
 
@@ -83,7 +90,6 @@ public class FitWe {
             }
         });
         configuration.getApplication().registerActivityLifecycleCallbacks(lifecycleHandler);
-        ImageLoaderWrap.initImageLoader(configuration.getContext());
         initWeexConfig();
         resourceCheck = new ResourceCheck(configuration.getContext(), configuration.getCheckApiHandler());
         resourceParse = new ResourceParse();
@@ -92,11 +98,16 @@ public class FitWe {
 
     private void initWeexConfig() {
         InitConfig.Builder builder = new InitConfig.Builder();
-        if (configuration.getImageAdapter() != null) {
-            builder.setImgAdapter(configuration.getImageAdapter());
-        } else {
-            builder.setImgAdapter(new ImageAdapter());
-        }
+        builder.setImgAdapter(new IWXImgLoaderAdapter() {
+            @Override
+            public void setImage(String url, ImageView view, WXImageQuality quality, WXImageStrategy strategy) {
+                if(view==null|| TextUtils.isEmpty(url)){
+                    return;
+                }
+                String uri = UriHandler.handleImageUri(view.getContext(), url);
+                configuration.getImageLoader().loadImage(view, uri);
+            }
+        });
         WXSDKEngine.initialize(configuration.getApplication(), builder.build());
         ModuleLoader.loadModuleFromAsset(getContext());
         WXEnvironment.setOpenDebugLog(configuration.isDebug());
