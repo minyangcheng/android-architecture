@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity {
     void clickOpenWeb() {
         GlobalRouter.getInstance()
                 .navigation("cg://h5.com")
-                .appendQueryParameter("title", "cheguo")
+                .appendQueryParameter("company_name", "cheguo")
                 .appendQueryParameter("host", "www.baidu.com")
                 .appendQueryParameter("scheme", "http")
                 .start();
