@@ -4,7 +4,7 @@ import com.min.core.CoreConstants;
 import com.min.core.base.BaseApp;
 import com.min.core.bean.BaseBean;
 import com.min.core.http.interceptor.CGApiInterceptor;
-import com.min.core.util.HttpsUtil;
+import com.min.core.helper.HttpsHelper;
 import com.min.sample.BuildConfig;
 import com.min.sample.data.model.InfoBean;
 
@@ -52,7 +52,7 @@ public interface MobileService {
 
             Cache cache = new Cache(new File(BaseApp.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 30);
 
-            HttpsUtil.SSLParams sslParams = HttpsUtil.getSslSocketFactory(null, null, null);
+            HttpsHelper.SSLParams sslParams = HttpsHelper.getSslSocketFactory(null, null, null);
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .cache(cache)

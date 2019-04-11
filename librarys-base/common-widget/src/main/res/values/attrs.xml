@@ -11,8 +11,6 @@
         <attr name="empty_text" format="reference|string" />
     </declare-styleable>
 
-    <attr name="stateLayoutDefStyle" format="reference" />
-
     <declare-styleable name="RefreshLoaderView">
         <attr name="dividerColor" format="color|reference" />
         <attr name="dividerHeight" format="dimension|reference" />

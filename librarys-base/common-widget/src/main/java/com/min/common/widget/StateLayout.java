@@ -16,7 +16,6 @@ import java.util.List;
 
 public class StateLayout extends FrameLayout {
 
-    private static final int defStyleAttr = R.attr.stateLayoutDefStyle;
     private static final int NOT_SET = -1;
 
     private static final String LOADING_TAG = "loading_tag";
@@ -50,7 +49,7 @@ public class StateLayout extends FrameLayout {
     }
 
     public StateLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, defStyleAttr);
+        this(context, attrs, 0);
     }
 
     public StateLayout(Context context, AttributeSet attrs, int defStyleAttr) {

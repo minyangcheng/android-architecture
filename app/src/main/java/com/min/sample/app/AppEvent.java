@@ -1,9 +1,5 @@
 package com.min.sample.app;
 
-/**
- * Created by minyangcheng on 2017/6/26.
- */
-
 public class AppEvent {
 
     private ChangeEventType type;

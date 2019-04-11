@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.min.common.widget.CenterTitleToolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolbarStyle"
+    <com.min.common.widget.TitleBar
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="wrap_content"
+        app:mainTitle="登录（采用Mvp模式）"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_phone"

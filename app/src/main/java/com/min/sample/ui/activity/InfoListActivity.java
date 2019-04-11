@@ -8,7 +8,7 @@ import com.min.common.widget.CenterTitleToolbar;
 import com.min.common.widget.refresh.RefreshLoaderView;
 import com.min.core.base.BaseActivity;
 import com.min.core.bean.BaseBean;
-import com.min.core.util.RxRefreshLoader;
+import com.min.core.helper.RxRefreshLoader;
 import com.min.sample.R;
 import com.min.sample.data.model.InfoBean;
 import com.min.sample.ui.adapter.InfoAdapter;
@@ -24,15 +24,11 @@ import rx.functions.Func1;
 
 public class InfoListActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
-    CenterTitleToolbar mToolbar;
     @BindView(R.id.rlv)
     RefreshLoaderView mRlv;
 
     private RxRefreshLoader<InfoBean> mRxRefreshLoader;
     private InfoAdapter mAdapter;
-
-    private View mHeaderView;
 
     @Override
     protected int getLayoutId() {
@@ -46,9 +42,6 @@ public class InfoListActivity extends BaseActivity {
     }
 
     private void initViews() {
-        initToolbar(mToolbar);
-        mToolbar.setTitle("信息列表");
-
         mAdapter = new InfoAdapter(this);
         mRxRefreshLoader = new RxRefreshLoader(mRlv, mAdapter, true, new Func1<Integer, Observable<BaseBean<List<InfoBean>>>>() {
             @Override

@@ -1,6 +1,6 @@
 package com.min.core.http.download;
 
-import com.min.core.util.HttpsUtil;
+import com.min.core.helper.HttpsHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +64,7 @@ public class DownloadManager {
     }
 
     public OkHttpClient getOkHttpClient() {
-        HttpsUtil.SSLParams sslParams = HttpsUtil.getSslSocketFactory(null, null, null);
+        HttpsHelper.SSLParams sslParams = HttpsHelper.getSslSocketFactory(null, null, null);
         OkHttpClient okClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(20, TimeUnit.SECONDS)

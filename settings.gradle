@@ -1,3 +1,11 @@
 include ':app'
-include ':librarys-base:common-util', ':librarys-base:common-widget', ':librarys-base:core-basics',':librarys-base:h5-container',':librarys-base:router',':librarys-base:weex-container'
+
+include ':librarys-base:common-util',
+        ':librarys-base:common-widget',
+        ':librarys-base:core-basics',
+        ':librarys-base:h5-container',
+        ':librarys-base:router',
+        ':librarys-base:weex-container',
+        ':librarys-base:sdk-location'
+
 include ':librarys-business:order'

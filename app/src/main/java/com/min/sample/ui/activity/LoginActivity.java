@@ -5,7 +5,6 @@ import android.widget.EditText;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.min.common.widget.CenterTitleToolbar;
 import com.min.core.base.BaseActivity;
 import com.min.sample.R;
 import com.min.sample.contract.LoginContract;
@@ -16,8 +15,6 @@ import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity implements LoginContract.View {
 
-    @BindView(R.id.toolbar)
-    CenterTitleToolbar mToolbar;
     @BindView(R.id.et_phone)
     EditText mPhoneEt;
     @BindView(R.id.et_pwd)
@@ -43,8 +40,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     }
 
     private void initView() {
-        initToolbar(mToolbar);
-        mToolbar.setTitle("登录");
     }
 
     @Override

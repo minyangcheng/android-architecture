@@ -2,11 +2,8 @@ package com.min.core.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.min.common.widget.HudDialog;
-import com.min.core.R;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import butterknife.ButterKnife;
@@ -42,16 +39,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
             mUnbinder.unbind();
         }
         super.onDestroy();
-    }
-
-    protected void initToolbar(Toolbar toolbar) {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     protected void showHudDialog(boolean canCancel) {

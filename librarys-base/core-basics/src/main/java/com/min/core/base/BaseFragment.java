@@ -3,13 +3,11 @@ package com.min.core.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.min.core.R;
 import com.min.common.widget.HudDialog;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
@@ -104,18 +102,6 @@ public abstract class BaseFragment extends RxFragment {
         } else {
             mIsVisible = false;
         }
-    }
-
-    protected void initToolbar(Toolbar toolbar) {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!getFragmentManager().popBackStackImmediate()) {
-                    getActivity().finish();
-                }
-            }
-        });
     }
 
     protected void judgeLoad() {

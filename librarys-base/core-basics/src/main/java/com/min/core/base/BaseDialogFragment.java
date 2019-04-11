@@ -3,7 +3,6 @@ package com.min.core.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +31,6 @@ public abstract class BaseDialogFragment extends RxDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-    }
-
-    protected void initToolbar(Toolbar toolbar) {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissAllowingStateLoss();
-            }
-        });
     }
 
     @Nullable

@@ -8,7 +8,7 @@ import com.min.core.CoreConstants;
 import com.min.core.R;
 import com.min.core.bean.BaseBean;
 import com.min.core.exception.ServerApiException;
-import com.min.core.util.GsonUtil;
+import com.min.core.helper.GsonHelper;
 
 import java.net.SocketTimeoutException;
 
@@ -67,7 +67,7 @@ public class ResponseHandler {
                                     return;
                                 }
                                 //http响应打印
-                                LogUtils.dTag(CoreConstants.HTTP_LOG, GsonUtil.toPrettyJson(tBaseBean));
+                                LogUtils.dTag(CoreConstants.HTTP_LOG, GsonHelper.toPrettyJson(tBaseBean));
                                 if (tBaseBean.isSuccess()) {
                                     subscriber.onNext(tBaseBean.data);
                                 } else if (tBaseBean.isSignOut()) {

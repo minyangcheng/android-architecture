@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.min.sample">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <application
         android:name="com.min.sample.app.App"
         android:allowBackup="true"
@@ -12,12 +9,6 @@
         android:label="${APP_NAME}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="${UMENG_APPKEY}" />
-        <meta-data
-            android:name="UMENG_CHANNEL_VALUE"
-            android:value="${UMENG_CHANNEL_VALUE}" />
 
         <activity
             android:name=".ui.activity.SplashActivity"

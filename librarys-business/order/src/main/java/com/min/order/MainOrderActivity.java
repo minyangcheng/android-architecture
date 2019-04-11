@@ -6,18 +6,16 @@ import android.widget.TextView;
 
 import com.min.core.base.BaseActivity;
 
-import butterknife.BindView;
-
 public class MainOrderActivity extends BaseActivity {
 
-    @BindView(R2.id.tv_extras)
     TextView mExtrasTv;
-    @BindView(R2.id.tv_query)
     TextView mQueryTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mExtrasTv = findViewById(R.id.tv_extras);
+        mQueryTv = findViewById(R.id.tv_query);
         initData();
     }
 

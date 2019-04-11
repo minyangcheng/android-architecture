@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 
 def VERSION_NAME = rootProject.ext.android["versionName"]
@@ -24,20 +23,21 @@ android {
         versionCode getVersionCodeByName(VERSION_NAME)
         versionName VERSION_NAME
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "default"
+        ndk {
+            abiFilters "armeabi" //由于需要采用weex，故只能使用armeabi
+        }
+        resValue "string", "build_config_package", applicationId  //子module可以通过这个属性，获取主module的buildConfig中的变量
 
-        resValue "string", "build_config_package", "com.min.sample"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner" //instrumentation test需要
+
         buildConfigField 'String', 'API_SERVER_URL', '"https://www.min-api.com"'
         buildConfigField 'String', 'API_UPDATE_URL', '"https://www.min-version.com"'
         buildConfigField 'String', 'BUGLY_APPID', '"123"'
         buildConfigField 'String', 'GIT_VERSION', "\"${getGitVersion()}\""
-        manifestPlaceholders = ['UMENG_APPKEY': '123',
-                                'BAIDU_KEY'   : '123',
+        manifestPlaceholders = ['BAIDU_KEY'   : '123',
                                 'APP_NAME'    : '@string/app_name']
 
-        ndk {
-            abiFilters "armeabi"
-        }
     }
 
     buildTypes {
@@ -62,28 +62,22 @@ android {
     productFlavors {
         beta_in {}
         beta_out {}
-        official {}
+        beta_preview {}
+        offical {}
     }
 
     productFlavors.all { flavor ->
         manifestPlaceholders.put("UMENG_CHANNEL_VALUE", name)
-        if (name.contentEquals("beta_in") || name.contentEquals("beta_out")) {
-            buildConfigField 'String', 'API_SERVER_URL', '"http://10.10.13.6:8080"'
-            buildConfigField 'String', 'API_UPDATE_URL', '"http://10.10.13.7:2531"'
-            buildConfigField 'String', 'SOURCE', '"123456"'
-            buildConfigField 'String', 'APP_SECRET', '"1234567890"'
-        }
-        if (name.contentEquals("beta_in")) {
-            buildConfigField 'String', 'YINSHENG_ID', '"123"'
-        }
     }
 
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
+        variant.outputs.all { output ->
+            def date = new Date()
+            def formattedDate = date.format('yyyyMMddHHmm')
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk') && 'release'.equals(variant.buildType.name)) {
-                output.outputFile = new File(output.outputFile.parent,
-                        "${rootProject.ext.android["apkPrefixName"]}-${buildTime()}-${variant.buildType.name}-${variant.versionName}-${variant.productFlavors[0].name}.apk".toLowerCase())
+                def fileName = "${rootProject.ext.android['apkPrefixName']}_${versionName}_${formattedDate}_${variant.productFlavors[0].name}.apk"
+                outputFileName = fileName
             }
         }
     }
@@ -103,13 +97,11 @@ android {
     }
 
     lintOptions {
-        warning 'InvalidPackage'
-        disable 'MissingTranslation'
         abortOnError false
     }
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -129,16 +121,17 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile(rootProject.ext.dependencies["espresso-core"], {
         exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.google.code.findbugs'
     })
     testCompile rootProject.ext.dependencies["junit"]
 
     compile rootProject.ext.dependencies["crashreport"]
     debugCompile rootProject.ext.dependencies["stetho"]
 
+    compile project(':librarys-base:core-basics')
+
+    compile project(':librarys-base:sdk-location')
     compile project(':librarys-base:h5-container')
     compile project(':librarys-base:weex-container')
-    compile project(':librarys-base:core-basics')
     compile project(':librarys-base:router')
     if(!isBuildModule.toBoolean()){
         compile project(':librarys-business:order')
@@ -147,48 +140,21 @@ dependencies {
     annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
 }
 
-def buildTime() {
-    return new Date().format("yyyyMMddHHmm")
-}
-
 def getGitVersion() {
     return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
 int getVersionCodeByName(String versionName) {
     def arr = versionName.split('\\.')
-    def versionCode = Integer.parseInt(arr[0]) * 10 * 10 + Integer.parseInt(arr[1]) * 10 + Integer.parseInt(arr[2])
-    println versionCode
-    return versionCode
-}
-
-def getLastModifyFileInDir(dirPath) {
-    def srcDirFile = new File(dirPath)
-    srcDirFile.exists()
-    if (srcDirFile.isDirectory()) {
-        def fileArr = srcDirFile.listFiles()
-        def sortFileArr = fileArr.sort { a, b ->
-            b.lastModified() - a.lastModified()
+    for(int i=1;i<arr.length;i++){
+        if(arr[i].length() == 1){
+            arr[i]='0'+arr[i]
         }
-        return sortFileArr[0]
     }
-    return null
-}
-
-def isWindows() {
-    return System.properties['os.name'].toString().toLowerCase().contains('windows');
-}
-
-//preBuild.dependsOn 'checkstyle', 'findbugs', 'pmd'
-
-task uploadApkToFir(dependsOn: 'assembleBeta_inRelease') << {
-    def sourceFile = getLastModifyFileInDir(project.buildDir.absolutePath + "\\outputs\\apk");
-    if (sourceFile != null && sourceFile.exists()) {
-        def path = sourceFile.absolutePath
-        println "start upload path=" + path
-        def prefix = isWindows() ? "cmd /c " : "";
-        Process p = (prefix + "fir login bd45787995687b3548aec9b22cd80a6a & fir publish ${path} -s='AndroidCheguoPos'").execute()
-        println "${p.text}"
-        println "end upload...."
+    def versionCode = '';
+    for(int i=0;i<arr.length;i++){
+        versionCode = versionCode +  arr[i];
     }
+    println versionCode
+    return Integer.parseInt(versionCode)
 }

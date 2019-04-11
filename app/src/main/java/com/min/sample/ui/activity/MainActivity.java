@@ -2,20 +2,17 @@ package com.min.sample.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.min.common.widget.CenterTitleToolbar;
 import com.min.common.widget.TitleBar;
 import com.min.core.base.BaseActivity;
 import com.min.core.base.BaseDialog;
 import com.min.core.base.BasePopupWindow;
-import com.min.core.util.GsonUtil;
+import com.min.core.helper.GsonHelper;
 import com.min.router.GlobalRouter;
 import com.min.sample.R;
 import com.min.sample.data.local.db.delegate.SearchDaoDelegate;
@@ -150,7 +147,7 @@ public class MainActivity extends BaseActivity {
             searchDaoDelegate.save("" + i);
         }
         List<SearchBean> searchBeanList = searchDaoDelegate.query();
-        LogUtils.d(GsonUtil.toPrettyJson(searchBeanList));
+        LogUtils.d(GsonHelper.toPrettyJson(searchBeanList));
     }
 
 }
