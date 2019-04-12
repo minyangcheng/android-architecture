@@ -135,6 +135,13 @@ public final class LogUtils {
         log(D, tag, contents);
     }
 
+    public static void dTag_(final String tag, String content ,final Object... args) {
+        if(args.length > 0 ){
+            content = String.format(content,args);
+        }
+        log(D, tag, content);
+    }
+
     public static void i(final Object... contents) {
         log(I, CONFIG.getGlobalTag(), contents);
     }

@@ -1,10 +1,9 @@
 package com.min.sample.data.remote;
 
-import com.min.core.CoreConstants;
 import com.min.core.base.BaseApp;
 import com.min.core.bean.BaseBean;
-import com.min.core.http.interceptor.CGApiInterceptor;
 import com.min.core.helper.HttpsHelper;
+import com.min.core.http.interceptor.CGApiInterceptor;
 import com.min.sample.BuildConfig;
 import com.min.sample.data.model.InfoBean;
 
@@ -17,7 +16,6 @@ import javax.net.ssl.SSLSession;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -47,8 +45,6 @@ public interface MobileService {
         }
 
         public static OkHttpClient getOkHttpClient() {
-            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-            logInterceptor.setLevel(CoreConstants.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
 
             Cache cache = new Cache(new File(BaseApp.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 30);
 
@@ -57,7 +53,6 @@ public interface MobileService {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .cache(cache)
                     .addInterceptor(new CGApiInterceptor())
-                    .addInterceptor(logInterceptor)
                     .retryOnConnectionFailure(true)
                     .readTimeout(10, TimeUnit.SECONDS)
                     .connectTimeout(10, TimeUnit.SECONDS)

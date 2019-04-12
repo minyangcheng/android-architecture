@@ -15,21 +15,12 @@ public class BaseApp extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
-        initConstantValues();
         initUtil();
         ImageLoaderHelper.init(this, CoreConstants.DEBUG);
     }
 
     public static Context getContext() {
         return context;
-    }
-
-    public void initConstantValues() {
-//        AppUtils.
-//        CoreConstants.DEBUG = BuildConfigUtils.isDebug(this);
-//        CoreConstants.VERSION_NAME = BuildConfigUtils.getConfigStr(this, "VERSION_NAME");
-//        CoreConstants.SDK_INT = Build.VERSION.SDK_INT + "";
-//        CoreConstants.FLAVOR = BuildConfigUtils.getConfigStr(this, "FLAVOR");
     }
 
     public void initUtil() {

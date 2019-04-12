@@ -14,6 +14,11 @@ public class BuildConfigUtils {
         }
     }
 
+    public static boolean isDebug() {
+        Object result = getBuildConfigValue("DEBUG");
+        return result != null && ((boolean) result);
+    }
+
     public static String getConfigStr(String configStr) {
         Object result = getBuildConfigValue(configStr);
         return result == null ? null : (String) result;

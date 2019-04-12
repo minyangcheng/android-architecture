@@ -1,6 +1,6 @@
 package com.min.core;
 
-import android.Manifest;
+import com.min.common.util.BuildConfigUtils;
 
 /**
  * Created by minyangcheng on 2016/10/8.
@@ -8,13 +8,9 @@ import android.Manifest;
 public class CoreConstants {
 
     public static final String HTTP_LOG = "HttpLog";
-    public static final String GLOBAL_LOG = "GlobalLog";
-    public static boolean DEBUG;
 
-    public static String VERSION_NAME;
-    public static String SDK_INT;
-    public static String FLAVOR;
-    public static String SOURCE;
-    public static String APP_SECRET;
+    public static final String GLOBAL_LOG = "AppLog";
+
+    public static boolean DEBUG = BuildConfigUtils.isDebug();
 
 }

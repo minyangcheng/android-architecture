@@ -2,6 +2,8 @@ package com.min.core.http.interceptor;
 
 import android.text.TextUtils;
 
+import com.min.common.util.AppUtils;
+import com.min.common.util.BuildConfigUtils;
 import com.min.common.util.EncryptUtils;
 import com.min.common.util.GsonUtils;
 import com.min.common.util.LogUtils;
@@ -23,9 +25,17 @@ import okio.Buffer;
 
 public class CGApiInterceptor implements Interceptor {
 
-    public static final String FORM = "application/x-www-form-urlencoded";
+    private String FORM = "application/x-www-form-urlencoded";
 
-    public static SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private String mAppSource;
+    private String mAppSecret;
+
+    public CGApiInterceptor() {
+        mAppSource = BuildConfigUtils.getConfigStr("APP_SOURCE");
+        mAppSecret = BuildConfigUtils.getConfigStr("APP_SECRET");
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -34,7 +44,6 @@ public class CGApiInterceptor implements Interceptor {
 
         RequestBody requestBody = request.body();
         if (request.method().equalsIgnoreCase("GET") || !isFormUrlEncoded(requestBody)) {
-            //请求参数打印
             LogUtils.dTag(CoreConstants.HTTP_LOG, request.url().toString());
             return chain.proceed(request);
         }
@@ -46,6 +55,7 @@ public class CGApiInterceptor implements Interceptor {
 
         Map<String, String> map = splitStrToMap(paramStr);
         handleParams(map);
+
         FormBody.Builder formBuilder = new FormBody.Builder();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             formBuilder.add(entry.getKey(), entry.getValue());
@@ -53,25 +63,21 @@ public class CGApiInterceptor implements Interceptor {
         request = request.newBuilder()
                 .post(formBuilder.build())
                 .build();
-        //请求参数打印
+
         LogUtils.dTag(CoreConstants.HTTP_LOG, GsonUtils.toPrettyJson(map));
+
         Response response = chain.proceed(request);
         return response;
     }
 
     private Request addMobileInfoToReqHeader(Request request) {
         String jsonString = "";
-        try {
-            Head head = new Head();
-            head.apiVersion = CoreConstants.VERSION_NAME;
-            head.mobileVersion = CoreConstants.SDK_INT;
-            head.channel = CoreConstants.FLAVOR;
-            head.time = mDateFormat.format(new Date());
-
-            jsonString = GsonUtils.toJson(head);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Head head = new Head();
+        head.os = "android";
+        head.version = AppUtils.getAppVersionName();
+        head.channel = BuildConfigUtils.getConfigStr("FLAVOR");
+        head.time = mDateFormat.format(new Date());
+        jsonString = GsonUtils.toJson(head);
         request = request.newBuilder()
                 .addHeader("MobileInfo", jsonString)
                 .build();
@@ -119,16 +125,17 @@ public class CGApiInterceptor implements Interceptor {
     }
 
     public void handleParams(Map<String, String> params) {
-        params.put("source", CoreConstants.SOURCE);
+        params.put("source", mAppSource);
         String mapUrl = mapToString(params);
-        params.put("signature", EncryptUtils.encryptMD5ToString(mapUrl + EncryptUtils.encryptMD5ToString(CoreConstants.APP_SECRET)));
+        params.put("signature", EncryptUtils.encryptMD5ToString(mapUrl + EncryptUtils.encryptMD5ToString(mAppSecret)));
     }
 
     class Head {
-        public String apiVersion;
-        public String mobileVersion;
+        public String os;
+        public String version;
         public String channel;
         public String time;
         public String token;
     }
+
 }
