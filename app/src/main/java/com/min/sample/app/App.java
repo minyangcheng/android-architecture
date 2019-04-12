@@ -26,7 +26,7 @@ public class App extends BaseApp {
                 .setImageLoader(new FitHybrid.HybridImageLoader() {
                     @Override
                     public void loadImage(ImageView view, String url) {
-                        ImageLoaderHelper.displayHttpImage(url, view);
+                        ImageLoaderHelper.displayImage(url, view);
                     }
                 });
 
@@ -37,7 +37,7 @@ public class App extends BaseApp {
                 .setImageLoader(new FitConfiguration.FitWeImageLoader() {
                     @Override
                     public void loadImage(ImageView view, String url) {
-                        ImageLoaderHelper.displayImage(view,url);
+                        ImageLoaderHelper.displayImage(url,view);
                     }
                 });
         FitWe.getInstance().init(configuration);

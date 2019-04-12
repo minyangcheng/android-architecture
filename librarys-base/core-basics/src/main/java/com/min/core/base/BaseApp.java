@@ -1,14 +1,9 @@
 package com.min.core.base;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 
-import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.CrashUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.min.common.util.BuildConfigUtils;
+import com.min.common.util.LogUtils;
 import com.min.core.CoreConstants;
 import com.min.core.helper.ImageLoaderHelper;
 
@@ -22,7 +17,6 @@ public class BaseApp extends Application {
         context = this;
         initConstantValues();
         initUtil();
-        initCrash();
         ImageLoaderHelper.init(this, CoreConstants.DEBUG);
     }
 
@@ -31,10 +25,11 @@ public class BaseApp extends Application {
     }
 
     public void initConstantValues() {
-        CoreConstants.DEBUG = BuildConfigUtils.isDebug(this);
-        CoreConstants.VERSION_NAME = BuildConfigUtils.getConfigStr(this, "VERSION_NAME");
-        CoreConstants.SDK_INT = Build.VERSION.SDK_INT + "";
-        CoreConstants.FLAVOR = BuildConfigUtils.getConfigStr(this, "FLAVOR");
+//        AppUtils.
+//        CoreConstants.DEBUG = BuildConfigUtils.isDebug(this);
+//        CoreConstants.VERSION_NAME = BuildConfigUtils.getConfigStr(this, "VERSION_NAME");
+//        CoreConstants.SDK_INT = Build.VERSION.SDK_INT + "";
+//        CoreConstants.FLAVOR = BuildConfigUtils.getConfigStr(this, "FLAVOR");
     }
 
     public void initUtil() {
@@ -53,17 +48,6 @@ public class BaseApp extends Application {
                 .setStackDeep(1)// log 栈深度，默认为 1
                 .setStackOffset(0)// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
                 .setSaveDays(3);
-    }
-
-    @SuppressLint("MissingPermission")
-    private void initCrash() {
-        CrashUtils.init(new CrashUtils.OnCrashListener() {
-            @Override
-            public void onCrash(String crashInfo, Throwable e) {
-                LogUtils.e(crashInfo);
-                AppUtils.relaunchApp();
-            }
-        });
     }
 
 }

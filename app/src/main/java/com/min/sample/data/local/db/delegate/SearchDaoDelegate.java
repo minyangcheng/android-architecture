@@ -1,6 +1,6 @@
 package com.min.sample.data.local.db.delegate;
 
-import com.blankj.utilcode.util.ObjectUtils;
+import com.min.common.util.ObjectUtils;
 import com.min.sample.data.local.db.DBOperate;
 import com.min.sample.data.model.SearchBean;
 import com.min.sample.data.local.db.dao.DaoSession;

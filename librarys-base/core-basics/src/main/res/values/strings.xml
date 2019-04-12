@@ -1,4 +1,4 @@
-<resources>
+<resources  xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="app_name">CoreModel</string>
 
     <string name="http_request_error">亲，您的网络不太顺畅喔~</string>

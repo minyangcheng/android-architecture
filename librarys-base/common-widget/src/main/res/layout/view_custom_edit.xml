@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#ffffff"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <TextView
+        android:id="@+id/tv_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:minWidth="82dp"
+        android:textColor="#333333"
+        android:textSize="14sp"
+        tools:text="营业执照号" />
+
+    <com.cgw360.common.widget.ClearableEditText
+        android:id="@+id/et_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:drawableRight="@drawable/ic_et_clear"
+        android:maxLines="1"
+        android:textColor="#666666"
+        android:textColorHint="#999999"
+        android:textSize="14sp"
+        tools:hint="1" />
+
+    <TextView
+        android:id="@+id/tv_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#333333"
+        android:textSize="14sp"
+        tools:text="个" />
+
+
+</LinearLayout>

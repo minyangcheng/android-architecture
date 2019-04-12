@@ -3,8 +3,8 @@ package com.min.sample.ui.activity;
 import android.os.Bundle;
 import android.widget.EditText;
 
-import com.blankj.utilcode.util.ObjectUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.min.common.util.ObjectUtils;
+import com.min.common.util.ToastUtils;
 import com.min.core.base.BaseActivity;
 import com.min.sample.R;
 import com.min.sample.contract.LoginContract;

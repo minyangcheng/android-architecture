@@ -2,6 +2,7 @@ package com.min.core.helper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -9,7 +10,11 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.File;
@@ -20,66 +25,89 @@ import java.io.File;
 public class ImageLoaderHelper {
 
     public static void init(Context context, boolean debug) {
-        ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(context.getApplicationContext())
-                .threadPoolSize(5)
+        ImageLoaderConfiguration.Builder configBuilder = new ImageLoaderConfiguration.Builder(context.getApplicationContext())
                 .threadPriority(Thread.NORM_PRIORITY - 1)
                 .diskCacheSize(80 * 1024 * 1024)
                 .tasksProcessingOrder(QueueProcessingType.LIFO);
         if (debug) {
-            builder.writeDebugLogs();
+            configBuilder.writeDebugLogs();
         }
-        ImageLoaderConfiguration config = builder.build();
+        ImageLoaderConfiguration config = configBuilder.build();
         ImageLoader.getInstance().init(config);
     }
 
-    public static void displayImage(ImageView view, String uri) {
-        if (uri.startsWith("http")) {
-            ImageLoaderHelper.displayHttpImage(uri, view);
+    public static void displayImage(String uri, ImageView imageView) {
+        if (TextUtils.isEmpty(uri) || imageView == null) {
+            return;
+        }
+        if (uri.startsWith("http://") || uri.startsWith("https://")) {
+            displayHttpImage(uri, imageView, 0, 0);
+        } else if (uri.indexOf("/") == -1) {
+            displayDrawableImage(Integer.parseInt(uri), imageView, 0, 0);
         } else {
-            ImageLoaderHelper.displayFileImageWithNoCache(new File(uri), view);
+            displayFileImage(new File(uri), imageView, 0, 0);
+        }
+    }
+
+    public static void displayImage(String uri, ImageView imageView, int width, int height) {
+        if (TextUtils.isEmpty(uri) || imageView == null) {
+            return;
+        }
+        if (uri.startsWith("http://") || uri.startsWith("https://")) {
+            displayHttpImage(uri, imageView, width, height);
+        } else if (uri.indexOf("/") == -1) {
+            displayDrawableImage(Integer.parseInt(uri), imageView, width, height);
+        } else {
+            displayFileImage(new File(uri), imageView, width, height);
         }
     }
 
     public static void displayHttpImage(String url, ImageView imageView) {
-        displayImage(url, imageView, null);
+        displayImage(url, imageView, null, null);
+    }
+
+    public static void displayHttpImage(String url, ImageView imageView, int width, int height) {
+        ImageSize imageSize = null;
+        if (width > 0 && height >= 0) {
+            imageSize = new ImageSize(width, height);
+        }
+        displayImage(url, imageView, null, imageSize);
     }
 
     public static void displayDrawableImage(int drawableId, ImageView imageView) {
         String url = "drawable://" + drawableId;
-        displayImage(url, imageView, null);
+        displayImage(url, imageView, null, null);
+    }
+
+    public static void displayDrawableImage(int drawableId, ImageView imageView, int width, int height) {
+        ImageSize imageSize = null;
+        if (width > 0 && height >= 0) {
+            imageSize = new ImageSize(width, height);
+        }
+        String url = "drawable://" + drawableId;
+        displayImage(url, imageView, null, imageSize);
     }
 
     public static void displayFileImage(File file, ImageView imageView) {
         String filePath = (file == null) ? "" : file.getAbsolutePath();
         String url = "file://" + filePath;
-        displayImage(url, imageView, null);
+        displayImage(url, imageView, null, null);
     }
 
-    public static void displayFileImageWithNoCache(File file, ImageView imageView) {
+    public static void displayFileImage(File file, ImageView imageView, int width, int height) {
+        ImageSize imageSize = null;
+        if (width > 0 && height >= 0) {
+            imageSize = new ImageSize(width, height);
+        }
         String filePath = (file == null) ? "" : file.getAbsolutePath();
         String url = "file://" + filePath;
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
-                .cacheOnDisk(false)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true)
-                .build();
-        displayImage(url, imageView, options);
+        displayImage(url, imageView, null, imageSize);
     }
 
-    private static void displayImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions) {
-        ImageLoader.getInstance().displayImage(url, imageView, displayImageOptions == null ? getDisplayImageOptions() : displayImageOptions);
-    }
-
-    public static DisplayImageOptions getDisplayImageOptions() {
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .delayBeforeLoading(50)
-                .considerExifParams(true)
-                .build();
-        return options;
+    private static void displayImage(String url, ImageView imageView, DisplayImageOptions displayImageOptions, ImageSize imageSize) {
+        ImageLoader.getInstance().displayImage(url, new ImageViewAware(imageView),
+                displayImageOptions == null ? getDisplayImageOptions() : displayImageOptions, imageSize
+                , null, null);
     }
 
     public static void loadImage(String url, final ImageLoadListener loadListener) {
@@ -112,6 +140,19 @@ public class ImageLoaderHelper {
                 }
             }
         });
+    }
+
+    public static DisplayImageOptions getDisplayImageOptions() {
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .resetViewBeforeLoading(true)
+//                .delayBeforeLoading(50)
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                .displayer(new FadeInBitmapDisplayer(500))
+                .build();
+        return options;
     }
 
     public interface ImageLoadListener {

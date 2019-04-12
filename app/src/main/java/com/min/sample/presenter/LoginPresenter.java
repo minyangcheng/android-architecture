@@ -1,6 +1,6 @@
 package com.min.sample.presenter;
 
-import com.blankj.utilcode.util.LogUtils;
+import com.min.common.util.LogUtils;
 import com.min.sample.contract.LoginContract;
 
 import java.util.concurrent.TimeUnit;

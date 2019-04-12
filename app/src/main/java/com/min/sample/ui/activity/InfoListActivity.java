@@ -1,10 +1,8 @@
 package com.min.sample.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
-import com.blankj.utilcode.util.ToastUtils;
-import com.min.common.widget.CenterTitleToolbar;
+import com.min.common.util.ToastUtils;
 import com.min.common.widget.refresh.RefreshLoaderView;
 import com.min.core.base.BaseActivity;
 import com.min.core.bean.BaseBean;
@@ -42,7 +40,7 @@ public class InfoListActivity extends BaseActivity {
     }
 
     private void initViews() {
-        mAdapter = new InfoAdapter(this);
+        mAdapter = new InfoAdapter(getContext());
         mRxRefreshLoader = new RxRefreshLoader(mRlv, mAdapter, true, new Func1<Integer, Observable<BaseBean<List<InfoBean>>>>() {
             @Override
             public Observable<BaseBean<List<InfoBean>>> call(Integer integer) {

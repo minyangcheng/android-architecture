@@ -42,7 +42,6 @@ project.ext {
             "greendao"              : "org.greenrobot:greendao:3.1.1",
             "eventbus"              : "de.greenrobot:eventbus:3.0.0-beta1",
             "crashreport"           : "com.tencent.bugly:crashreport:latest.release",
-            "stetho"                : "com.facebook.stetho:stetho:1.5.0",
 
             "retrofit"              : "com.squareup.retrofit2:retrofit:2.1.0",
             "converter-gson"        : "com.squareup.retrofit2:converter-gson:2.1.0",
@@ -58,5 +57,7 @@ project.ext {
             "rxpermissions"         : "com.tbruyelle.rxpermissions:rxpermissions:0.9.2@aar",
 
             "router"                : "me.drakeet.floo:floo:1.1.0",
+            "photoview"             : "com.commit451:PhotoView:1.2.4"
+
     ]
 }

@@ -2,10 +2,10 @@ package com.min.core.http.interceptor;
 
 import android.text.TextUtils;
 
-import com.blankj.utilcode.util.EncryptUtils;
-import com.blankj.utilcode.util.LogUtils;
+import com.min.common.util.EncryptUtils;
+import com.min.common.util.GsonUtils;
+import com.min.common.util.LogUtils;
 import com.min.core.CoreConstants;
-import com.min.core.helper.GsonHelper;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -54,7 +54,7 @@ public class CGApiInterceptor implements Interceptor {
                 .post(formBuilder.build())
                 .build();
         //请求参数打印
-        LogUtils.dTag(CoreConstants.HTTP_LOG, GsonHelper.toPrettyJson(map));
+        LogUtils.dTag(CoreConstants.HTTP_LOG, GsonUtils.toPrettyJson(map));
         Response response = chain.proceed(request);
         return response;
     }
@@ -68,7 +68,7 @@ public class CGApiInterceptor implements Interceptor {
             head.channel = CoreConstants.FLAVOR;
             head.time = mDateFormat.format(new Date());
 
-            jsonString = GsonHelper.toJson(head);
+            jsonString = GsonUtils.toJson(head);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

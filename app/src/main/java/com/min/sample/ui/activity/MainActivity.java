@@ -6,19 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.min.common.util.GsonUtils;
+import com.min.common.util.LogUtils;
+import com.min.common.util.ToastUtils;
 import com.min.common.widget.TitleBar;
 import com.min.core.base.BaseActivity;
 import com.min.core.base.BaseDialog;
 import com.min.core.base.BasePopupWindow;
-import com.min.core.helper.GsonHelper;
+import com.min.core.helper.image.ImagePreviewDialog;
 import com.min.router.GlobalRouter;
 import com.min.sample.R;
 import com.min.sample.data.local.db.delegate.SearchDaoDelegate;
 import com.min.sample.data.model.SearchBean;
 import com.min.sample.ui.dialog.ExampleDialogFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -132,7 +134,14 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btn_login)
     void clickLogin() {
-        startActivity(new Intent(this, LoginActivity.class));
+//        startActivity(new Intent(this, LoginActivity.class));
+//        startActivity(new Intent(this,TabViewPagerActivity.class));
+        List<ImagePreviewDialog.ImageItem> imageItems = new ArrayList<>();
+        imageItems.add(new ImagePreviewDialog.ImageItem("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554985053111&di=072f77d6e6f963a2a284499e538bc595&imgtype=0&src=http%3A%2F%2Fcdnq.duitang.com%2Fuploads%2Fitem%2F201201%2F31%2F20120131203259_QaWzT.jpg"));
+        imageItems.add(new ImagePreviewDialog.ImageItem("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554985053111&di=d34dcd14441c8c0bc8171e59099c8761&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201412%2F23%2F20141223204109_QEi4v.jpeg"));
+        imageItems.add(new ImagePreviewDialog.ImageItem("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554985053110&di=a27055988aa997f7317083f1cec6d230&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201610%2F24%2F20161024160810_xusFa.jpeg"));
+        ImagePreviewDialog dialog = new ImagePreviewDialog(this,imageItems,0);
+        dialog.show();
     }
 
     @OnClick(R.id.btn_info_list)
@@ -147,7 +156,7 @@ public class MainActivity extends BaseActivity {
             searchDaoDelegate.save("" + i);
         }
         List<SearchBean> searchBeanList = searchDaoDelegate.query();
-        LogUtils.d(GsonHelper.toPrettyJson(searchBeanList));
+        LogUtils.d(GsonUtils.toPrettyJson(searchBeanList));
     }
 
 }

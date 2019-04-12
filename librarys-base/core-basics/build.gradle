@@ -38,6 +38,8 @@ dependencies {
     compile rootProject.ext.dependencies["rxlifecycle"]
     compile rootProject.ext.dependencies["rxlifecycle-components"]
 
+    compile rootProject.ext.dependencies["photoview"]
+
     compile project(':librarys-base:common-util')
     compile project(':librarys-base:common-widget')
 }

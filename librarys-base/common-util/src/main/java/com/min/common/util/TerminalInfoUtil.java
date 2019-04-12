@@ -1,13 +1,8 @@
 package com.min.common.util;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-
-import com.blankj.utilcode.util.DeviceUtils;
-import com.blankj.utilcode.util.PhoneUtils;
 
 /**
  * Created by minyangcheng on 2019/4/11.
@@ -41,18 +36,20 @@ public class TerminalInfoUtil {
     }
 
 
+    @SuppressLint("MissingPermission")
     private TerminalInfo initTerminalInfo() {
         terminalInfo = new TerminalInfo();
         terminalInfo.serial = Build.SERIAL;
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            terminalInfo.imei = PhoneUtils.getIMEI();
-            terminalInfo.imsi = PhoneUtils.getIMSI();
-        }
         terminalInfo.phoneType = PhoneUtils.getPhoneType();
         terminalInfo.androidId = DeviceUtils.getAndroidID();
-        terminalInfo.macAddress = DeviceUtils.getMacAddress();
         terminalInfo.manufacturer = DeviceUtils.getManufacturer();
         terminalInfo.model = DeviceUtils.getModel();
+        try {
+            terminalInfo.imei = PhoneUtils.getIMEI();
+            terminalInfo.imsi = PhoneUtils.getIMSI();
+            terminalInfo.macAddress = DeviceUtils.getMacAddress();
+        } catch (Exception e) {
+        }
         return terminalInfo;
     }
 

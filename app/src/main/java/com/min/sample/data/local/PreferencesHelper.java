@@ -1,6 +1,6 @@
 package com.min.sample.data.local;
 
-import com.blankj.utilcode.util.SPUtils;
+import com.min.common.util.SPUtils;
 import com.min.sample.app.AppConstants;
 
 public class PreferencesHelper {

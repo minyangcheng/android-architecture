@@ -6,19 +6,17 @@ package com.min.core.bean;
 public class BaseBean<T> {
 
     public int code;
-
     public String message;
-
     public T data;
 
-    public String api;
+    public int totalItem;
 
-    public boolean isSuccess(){
-        return code==10000;
+    public boolean isSuccess() {
+        return code == 10000;
     }
 
-    public boolean isSignOut(){
-        return code==100009;
+    public boolean isSignOut() {
+        return false;
     }
 
 }

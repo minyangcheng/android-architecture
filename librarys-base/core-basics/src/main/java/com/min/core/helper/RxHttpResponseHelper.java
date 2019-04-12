@@ -1,23 +1,21 @@
-package com.min.core.http;
+package com.min.core.helper;
 
 import android.content.Context;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.min.common.util.GsonUtils;
+import com.min.common.util.LogUtils;
+import com.min.common.util.ToastUtils;
 import com.min.core.CoreConstants;
 import com.min.core.R;
 import com.min.core.bean.BaseBean;
 import com.min.core.exception.ServerApiException;
-import com.min.core.helper.GsonHelper;
-
-import java.net.SocketTimeoutException;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ResponseHandler {
+public class RxHttpResponseHelper {
 
     public static <T> Observable.Transformer<BaseBean<T>, T> handleServerResult() {
         return handleServerResult(true);
@@ -52,13 +50,8 @@ public class ResponseHandler {
                                 if (subscriber.isUnsubscribed()) {
                                     return;
                                 }
-                                //http响应打印
-                                LogUtils.dTag(CoreConstants.HTTP_LOG, e);
-                                if (e instanceof SocketTimeoutException) {
-                                    subscriber.onError(new ServerApiException(-1, e.getMessage()));
-                                } else {
-                                    subscriber.onError(new ServerApiException(-2, e.getMessage()));
-                                }
+                                LogUtils.dTag(CoreConstants.HTTP_LOG, e);  //http响应打印
+                                subscriber.onError(new ServerApiException(-1, e.getMessage()));
                             }
 
                             @Override
@@ -66,12 +59,11 @@ public class ResponseHandler {
                                 if (subscriber.isUnsubscribed()) {
                                     return;
                                 }
-                                //http响应打印
-                                LogUtils.dTag(CoreConstants.HTTP_LOG, GsonHelper.toPrettyJson(tBaseBean));
+                                LogUtils.dTag(CoreConstants.HTTP_LOG, GsonUtils.toPrettyJson(tBaseBean));  //http响应打印
                                 if (tBaseBean.isSuccess()) {
                                     subscriber.onNext(tBaseBean.data);
                                 } else if (tBaseBean.isSignOut()) {
-
+                                    //退出登陆处理
                                 } else {
                                     subscriber.onError(new ServerApiException(tBaseBean));
                                 }

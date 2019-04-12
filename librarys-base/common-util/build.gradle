@@ -23,8 +23,7 @@ dependencies {
 
     compile rootProject.ext.dependencies["support-v4"]
     compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["design"]
+    compile rootProject.ext.dependencies["gson"]
 
-    compile('com.blankj:utilcode:1.21.2', {
-        exclude group: 'com.blankj', module: 'bus'
-    })
 }

@@ -8,16 +8,15 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="ToolbarStyle">
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="titleTextAppearance">@style/Toolbar_TextAppearance_White</item>
-        <item name="android:background">?attr/colorPrimary</item>
-    </style>
-
-    <style name="Toolbar_TextAppearance_White">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
+    <declare-styleable name="CustomEditLayout">
+        <attr name="left_tag" format="string"/>
+        <attr name="input_type" format="integer"/>
+        <attr name="hint" format="string|reference"/>
+        <attr name="max_length" format="integer"/>
+        <attr name="unit" format="string|reference"/>
+        <attr name="decimal_length" format="integer|reference"/>
+        <attr name="input_by_left" format="boolean"/>
+        <attr name="etPadding" format="integer|reference"/>
+    </declare-styleable>
 
 </resources>

@@ -127,7 +127,7 @@ public abstract class BaseFragment extends RxFragment {
         }
     }
 
-    protected void hideHudDailog() {
+    protected void hideHudDialog() {
         if (mHudDialog != null && mHudDialog.isShowing()) {
             mHudDialog.dismiss();
         }
