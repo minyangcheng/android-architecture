@@ -35,7 +35,13 @@ public class EasyImageSelector {
         void onImagePicked(File imageFile, ImageSource source);
     }
 
-    public static void openCamera(final String prefix, final Object obj) {
+    /**
+     * 拍照
+     *
+     * @param prefix 如果为空，则使用默认文件前缀
+     * @param obj
+     */
+    public static void openCamera(final Object obj, final String prefix) {
         if (obj == null) return;
         final BaseFragment fragment = obj instanceof BaseFragment ? (BaseFragment) obj : null;
         final BaseActivity activity = obj instanceof BaseActivity ? (BaseActivity) obj : null;
@@ -57,7 +63,13 @@ public class EasyImageSelector {
         });
     }
 
-    public static void openGalleryPicker(final String prefix, final Object obj) {
+    /**
+     * 拍照
+     *
+     * @param prefix 如果为空，则使用默认文件前缀
+     * @param obj
+     */
+    public static void openGalleryPicker(final Object obj, final String prefix) {
         if (obj == null) return;
         final BaseFragment fragment = obj instanceof BaseFragment ? (BaseFragment) obj : null;
         final BaseActivity activity = obj instanceof BaseActivity ? (BaseActivity) obj : null;

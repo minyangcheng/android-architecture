@@ -1,4 +1,4 @@
-package com.min.core.helper.image;
+package com.min.core.view;
 
 import android.content.Context;
 import android.graphics.Color;

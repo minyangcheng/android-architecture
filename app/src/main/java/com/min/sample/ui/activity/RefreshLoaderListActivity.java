@@ -20,22 +20,22 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
 
-public class InfoListActivity extends BaseActivity {
+public class RefreshLoaderListActivity extends BaseActivity {
 
-    @BindView(R.id.rlv)
-    RefreshLoaderView mRlv;
+    private RefreshLoaderView mRlv;
 
     private RxRefreshLoader<InfoBean> mRxRefreshLoader;
     private InfoAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_info_list;
+        return R.layout.activity_refresh_loader_list;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRlv = findViewById(R.id.rlv);
         initViews();
     }
 

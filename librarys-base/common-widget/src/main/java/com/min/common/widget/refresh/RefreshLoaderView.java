@@ -2,8 +2,6 @@ package com.min.common.widget.refresh;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,10 +60,7 @@ public class RefreshLoaderView extends FrameLayout {
         mListRv.setLayoutManager(layoutManager);
 
         if (mDividerHeight > 0) {
-            Drawable dividerDrawable = getDividerDrawable(mDividerColor, mDividerHeight);
-            DividerItemDecoration decoration = new DividerItemDecoration(mContext,
-                    DividerItemDecoration.VERTICAL_LIST
-                    , dividerDrawable);
+            DividerItemDecoration decoration = new DividerItemDecoration(DividerItemDecoration.VERTICAL_LIST, mDividerColor, mDividerHeight);
             mListRv.addItemDecoration(decoration);
         }
     }
@@ -75,8 +70,7 @@ public class RefreshLoaderView extends FrameLayout {
         mListRv.setLayoutManager(layoutManager);
 
         if (mDividerHeight > 0) {
-            Drawable dividerDrawable = getDividerDrawable(mDividerColor, mDividerHeight);
-            DividerGridItemDecoration decoration = new DividerGridItemDecoration(mContext, dividerDrawable);
+            DividerGridItemDecoration decoration = new DividerGridItemDecoration(mDividerColor, mDividerHeight);
             mListRv.addItemDecoration(decoration);
         }
 
@@ -109,14 +103,6 @@ public class RefreshLoaderView extends FrameLayout {
 
     public RecyclerView getRecyclerView() {
         return mListRv;
-    }
-
-    private ShapeDrawable getDividerDrawable(int color, int height) {
-        ShapeDrawable shapeDrawable = new ShapeDrawable();
-        shapeDrawable.setIntrinsicHeight(height);
-        shapeDrawable.setIntrinsicWidth(height);
-        shapeDrawable.getPaint().setColor(color);
-        return shapeDrawable;
     }
 
 }

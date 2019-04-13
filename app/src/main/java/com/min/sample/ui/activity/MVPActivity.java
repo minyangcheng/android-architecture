@@ -13,7 +13,7 @@ import com.min.sample.presenter.LoginPresenter;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class LoginActivity extends BaseActivity implements LoginContract.View {
+public class MVPActivity extends BaseActivity implements LoginContract.View {
 
     @BindView(R.id.et_phone)
     EditText mPhoneEt;
@@ -44,7 +44,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_login;
+        return R.layout.activity_mvp;
     }
 
     @OnClick(R.id.btn_login)

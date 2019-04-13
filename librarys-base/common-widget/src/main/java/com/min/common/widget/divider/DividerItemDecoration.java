@@ -5,9 +5,12 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.min.common.widget.Kit;
 
 /**
  * 列表布局分割线，可以设置最后一个条目是否绘制分割线
@@ -29,36 +32,24 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private boolean mIsEndDraw;
 
     public DividerItemDecoration(Context context, int orientation) {
-        setDefaultDrawable(context);
-        setOrientation(orientation);
-    }
-
-    public DividerItemDecoration(Context context, int orientation , int drawableId) {
-        if(drawableId>0){
-            mDivider = context.getResources().getDrawable(drawableId);
-        }else{
-            setDefaultDrawable(context);
-        }
-        setOrientation(orientation);
-    }
-
-    public DividerItemDecoration(Context context, int orientation , Drawable drawable) {
-        if(drawable!=null){
-            mDivider = drawable;
-        }else{
-            setDefaultDrawable(context);
-        }
-        setOrientation(orientation);
-    }
-
-    private void setDefaultDrawable(Context context){
         TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
+        setOrientation(orientation);
     }
 
-    public void setIsEndDraw(boolean isEndDraw){
-        mIsEndDraw=isEndDraw;
+    public DividerItemDecoration(int orientation, Drawable drawable) {
+        mDivider = drawable;
+        setOrientation(orientation);
+    }
+
+    public DividerItemDecoration(int orientation, int color, int height) {
+        mDivider = Kit.getDividerDrawable(color, height);
+        setOrientation(orientation);
+    }
+
+    public void setIsEndDraw(boolean isEndDraw) {
+        mIsEndDraw = isEndDraw;
     }
 
     public void setOrientation(int orientation) {
@@ -81,7 +72,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
 
-        int childCount=parent.getChildCount()-1;
+        int childCount = parent.getChildCount() - 1;
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -96,7 +87,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         int top = parent.getPaddingTop();
         int bottom = parent.getHeight() - parent.getPaddingBottom();
 
-        int childCount = parent.getChildCount()-1;
+        int childCount = parent.getChildCount() - 1;
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
@@ -110,29 +101,38 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if(mIsEndDraw){
+        if (mIsEndDraw) {
             if (mOrientation == VERTICAL_LIST) {
                 outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
             } else {
                 outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
             }
-        }else{
+        } else {
             int adapterCount = parent.getAdapter().getItemCount();
-            int itemPosition=((RecyclerView.LayoutParams) view.getLayoutParams()).getViewLayoutPosition();
+            int itemPosition = ((RecyclerView.LayoutParams) view.getLayoutParams()).getViewLayoutPosition();
 
             if (mOrientation == VERTICAL_LIST) {
-                if(itemPosition!=adapterCount-1){
+                if (itemPosition != adapterCount - 1) {
                     outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
-                }else{
+                } else {
                     outRect.set(0, 0, 0, 0);
                 }
             } else {
-                if(itemPosition!=adapterCount-1){
+                if (itemPosition != adapterCount - 1) {
                     outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
-                }else{
+                } else {
                     outRect.set(0, 0, 0, 0);
                 }
             }
         }
     }
+
+    private ShapeDrawable getDividerDrawable(int color, int height) {
+        ShapeDrawable shapeDrawable = new ShapeDrawable();
+        shapeDrawable.setIntrinsicHeight(height);
+        shapeDrawable.setIntrinsicWidth(height);
+        shapeDrawable.getPaint().setColor(color);
+        return shapeDrawable;
+    }
+
 }

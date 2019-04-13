@@ -1,16 +1,25 @@
 package com.min.core.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * popupwindow的根布局上的layout_width和layout_height都无效，最终大小需要通过构造函数
+ * this(context, Kit.dip2px(context,300), ViewGroup.LayoutParams.WRAP_CONTENT)指定
+ * <p>
+ * 默认大小为宽高都为wrap_content
+ */
 public abstract class BasePopupWindow extends PopupWindow {
 
     protected String tag;
@@ -24,7 +33,7 @@ public abstract class BasePopupWindow extends PopupWindow {
     private Unbinder mUnbinder;
 
     public BasePopupWindow(Context context) {
-        this(context, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        this(context, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     public BasePopupWindow(Context context, int width, int height) {
@@ -46,6 +55,19 @@ public abstract class BasePopupWindow extends PopupWindow {
         if (mRootView != null) {
             onViewCreate(mRootView);
             setContentView(mRootView);
+            setDim(0.6f);
+        }
+    }
+
+    private void setDim(float alpha) {
+        if (mContext instanceof Activity) {
+            Activity activity = (Activity) mContext;
+            if(!activity.isFinishing()) {
+                Window window = activity.getWindow();
+                WindowManager.LayoutParams layoutParams = window.getAttributes();
+                layoutParams.alpha = alpha;
+                window.setAttributes(layoutParams);
+            }
         }
     }
 
@@ -57,6 +79,7 @@ public abstract class BasePopupWindow extends PopupWindow {
             super.setOnDismissListener(new OnDismissListener() {
                 @Override
                 public void onDismiss() {
+                    setDim(1.0f);
                     if (mUnbinder != null) {
                         mUnbinder.unbind();
                     }
@@ -72,10 +95,12 @@ public abstract class BasePopupWindow extends PopupWindow {
     protected abstract int getLayoutId();
 
     protected void onViewCreate(View view) {
+
     }
 
     @Override
     public void setOnDismissListener(OnDismissListener onDismissListener) {
         this.mListener = onDismissListener;
     }
+
 }

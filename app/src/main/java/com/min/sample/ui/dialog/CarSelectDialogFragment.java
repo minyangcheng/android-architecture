@@ -13,21 +13,20 @@ import butterknife.OnClick;
  * Created by minyangcheng on 2017/9/19.
  */
 
-public class ExampleDialogFragment extends BaseDialogFragment {
+public class CarSelectDialogFragment extends BaseDialogFragment {
+
+//    public CarSelectDialogFragment(){
+//        super(R.style.AppTheme);  //以页面形式展示
+//    }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.dialog_example;
+        return R.layout.dialog_car_select;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @OnClick(R.id.view_fl)
-    void clickView() {
-        dismiss();
     }
 
 }

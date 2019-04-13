@@ -13,6 +13,9 @@ import com.trello.rxlifecycle.components.support.RxDialogFragment;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * 基于Dialog的对话框生命周期是不会随着Activity的，所以优先使用DialogFragment
+ */
 public abstract class BaseDialogFragment extends RxDialogFragment {
 
     protected Context mContext;
