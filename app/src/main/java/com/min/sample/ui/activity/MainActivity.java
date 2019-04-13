@@ -139,7 +139,7 @@ public class MainActivity extends BaseActivity {
 
     void openPopupWindow() {
         CarPopWin popWin = new CarPopWin(this);
-        popWin.showAsDropDown(mTitleBar,0,0,Gravity.RIGHT);
+        popWin.showAsDropDown(mTitleBar, 0, 0, Gravity.RIGHT);
     }
 
     void openDialogFragment() {

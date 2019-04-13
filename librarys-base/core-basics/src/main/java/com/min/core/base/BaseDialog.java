@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.min.core.R;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import com.min.core.helper.inject.ViewInject;
 
 /**
  * Created by minyangcheng on 2017/9/18.
@@ -18,8 +16,6 @@ import butterknife.Unbinder;
 public abstract class BaseDialog extends Dialog {
 
     private View mRootView;
-
-    private Unbinder mUnbinder;
 
     public BaseDialog(Context context) {
         this(context, R.style.DialogMatch);
@@ -36,7 +32,7 @@ public abstract class BaseDialog extends Dialog {
             mRootView = LayoutInflater.from(getContext()).inflate(getLayoutId(), null);
             onViewCreate(mRootView);
             setContentView(mRootView);
-            mUnbinder = ButterKnife.bind(this);
+            ViewInject.inject(this);
         }
     }
 
@@ -44,9 +40,6 @@ public abstract class BaseDialog extends Dialog {
 
     @Override
     public void onDetachedFromWindow() {
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-        }
         super.onDetachedFromWindow();
     }
 

@@ -136,8 +136,6 @@ dependencies {
     if(!isBuildModule.toBoolean()){
         compile project(':librarys-business:order')
     }
-    compile rootProject.ext.dependencies["butterknife"]
-    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
 }
 
 def getGitVersion() {

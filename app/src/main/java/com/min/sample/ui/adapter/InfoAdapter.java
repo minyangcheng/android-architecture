@@ -8,11 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.min.common.widget.recyclerview.HFRecyclerViewAdapter;
+import com.min.core.helper.inject.ViewInject;
+import com.min.core.helper.inject.annotation.BindView;
 import com.min.sample.R;
 import com.min.sample.data.model.InfoBean;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by minyangcheng on 2016/10/13.
@@ -47,7 +46,7 @@ public class InfoAdapter extends HFRecyclerViewAdapter<InfoBean, InfoAdapter.Ite
 
         public ItemViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            ViewInject.inject(this,itemView);
         }
 
     }

@@ -2,6 +2,7 @@ package com.min.core.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 
 import com.min.common.util.LogUtils;
 import com.min.core.CoreConstants;
@@ -15,15 +16,34 @@ public class BaseApp extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
+        initStrictMode();
         initUtil();
         ImageLoaderHelper.init(this, CoreConstants.DEBUG);
+    }
+
+    protected void initStrictMode() {
+        if (!CoreConstants.DEBUG) {
+            return;
+        }
+        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .permitDiskReads()
+                .permitDiskWrites()
+                .penaltyLog()
+                .build();
+        StrictMode.setThreadPolicy(threadPolicy);
+        StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build();
+        StrictMode.setVmPolicy(vmPolicy);
     }
 
     public static Context getContext() {
         return context;
     }
 
-    public void initUtil() {
+    protected void initUtil() {
         LogUtils.getConfig()
                 .setLogSwitch(CoreConstants.DEBUG)// 设置 log 总开关，包括输出到控制台和文件，默认开
                 .setConsoleSwitch(CoreConstants.DEBUG)// 设置是否输出到控制台开关，默认开

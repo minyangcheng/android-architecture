@@ -8,14 +8,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.min.common.widget.tab.TabViewPagerIndicator;
+import com.min.core.helper.inject.ViewInject;
+import com.min.core.helper.inject.annotation.BindView;
 import com.min.sample.R;
 import com.min.sample.ui.fragment.ContentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TabViewPagerActivity extends AppCompatActivity {
 
@@ -30,7 +29,7 @@ public class TabViewPagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_view_pager);
-        ButterKnife.bind(this);
+        ViewInject.inject(this);
 
         mFragmentList=new ArrayList<>();
         mFragmentList.add(ContentFragment.newInstance("0"));

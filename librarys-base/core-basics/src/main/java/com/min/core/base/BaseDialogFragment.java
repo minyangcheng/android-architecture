@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.min.core.R;
+import com.min.core.helper.inject.ViewInject;
 import com.trello.rxlifecycle.components.support.RxDialogFragment;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * 基于Dialog的对话框生命周期是不会随着Activity的，所以优先使用DialogFragment
@@ -19,8 +17,6 @@ import butterknife.Unbinder;
 public abstract class BaseDialogFragment extends RxDialogFragment {
 
     protected Context mContext;
-
-    private Unbinder mUnbinder;
 
     public BaseDialogFragment() {
         setStyle(STYLE_NORMAL, R.style.DialogMatch);
@@ -41,7 +37,7 @@ public abstract class BaseDialogFragment extends RxDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getLayoutId() > 0) {
             View view = inflater.inflate(getLayoutId(), container, false);
-            mUnbinder = ButterKnife.bind(this, view);
+            ViewInject.inject(this,view);
             return view;
         } else {
             return super.onCreateView(inflater, container, savedInstanceState);
@@ -50,9 +46,6 @@ public abstract class BaseDialogFragment extends RxDialogFragment {
 
     @Override
     public void onDestroyView() {
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-        }
         super.onDestroyView();
     }
 

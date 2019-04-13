@@ -6,10 +6,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.min.core.base.BaseFragment;
+import com.min.core.helper.inject.annotation.BindView;
 import com.min.sample.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ContentFragment extends BaseFragment {
 
@@ -43,8 +42,6 @@ public class ContentFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
-
         mContentTv.setText(content);
     }
 

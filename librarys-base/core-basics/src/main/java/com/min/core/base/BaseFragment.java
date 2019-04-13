@@ -9,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.min.common.widget.HudDialog;
+import com.min.core.helper.inject.ViewInject;
 import com.trello.rxlifecycle.components.support.RxFragment;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public abstract class BaseFragment extends RxFragment {
 
@@ -24,8 +22,6 @@ public abstract class BaseFragment extends RxFragment {
     protected Context mContext;
 
     private HudDialog mHudDialog;
-
-    private Unbinder mUnbinder;
 
     public BaseFragment() {
         tag = this.getClass().getSimpleName();
@@ -48,7 +44,7 @@ public abstract class BaseFragment extends RxFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getLayoutId() > 0) {
             View view = LayoutInflater.from(getContext()).inflate(getLayoutId(), container, false);
-            mUnbinder = ButterKnife.bind(this, view);
+            ViewInject.inject(this, view);
             return view;
         }
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -80,9 +76,6 @@ public abstract class BaseFragment extends RxFragment {
     public void onDestroyView() {
         mIsPrepared = false;
         mIsVisible = false;
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-        }
         super.onDestroyView();
     }
 

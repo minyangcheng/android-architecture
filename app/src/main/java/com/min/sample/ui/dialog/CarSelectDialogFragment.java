@@ -7,8 +7,6 @@ import android.view.View;
 import com.min.core.base.BaseDialogFragment;
 import com.min.sample.R;
 
-import butterknife.OnClick;
-
 /**
  * Created by minyangcheng on 2017/9/19.
  */

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;

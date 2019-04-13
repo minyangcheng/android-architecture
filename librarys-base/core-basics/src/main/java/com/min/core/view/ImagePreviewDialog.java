@@ -75,35 +75,11 @@ public class ImagePreviewDialog extends AppCompatDialog {
     private void initViews() {
         mVp = findViewById(R.id.vp);
         mNumTv = findViewById(R.id.tv);
-        mVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                displayImage(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
         ImagePageAdapter pageAdapter = new ImagePageAdapter(mImageItemList);
         mVp.setAdapter(pageAdapter);
 
-        if (mPos == 0) {
-            displayImage(mPos);
-        }
         mVp.setCurrentItem(mPos);
-    }
-
-    private void displayImage(int pos) {
-        this.mPos = pos;
-        ImageItem imageItem = mImageItemList.get(mPos);
     }
 
     public class ImagePageAdapter extends PagerAdapter {
