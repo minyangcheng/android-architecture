@@ -1,7 +1,5 @@
 package com.min.core.helper;
 
-import android.content.Context;
-
 import com.min.common.util.GsonUtils;
 import com.min.common.util.LogUtils;
 import com.min.common.util.ToastUtils;
@@ -9,6 +7,8 @@ import com.min.core.CoreConstants;
 import com.min.core.R;
 import com.min.core.bean.BaseBean;
 import com.min.core.exception.ServerApiException;
+
+import java.net.SocketTimeoutException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -51,7 +51,7 @@ public class RxHttpResponseHelper {
                                     return;
                                 }
                                 LogUtils.eTag(CoreConstants.HTTP_LOG, e);
-                                subscriber.onError(new ServerApiException(-1, e.getMessage()));
+                                subscriber.onError(e);
                             }
 
                             @Override
@@ -85,23 +85,16 @@ public class RxHttpResponseHelper {
         };
     }
 
-    public static void handlerError(Context context, Throwable throwable) {
-        if (context == null || throwable == null) return;
+    public static void handlerError(Throwable throwable) {
+        if (throwable == null) return;
         if (throwable instanceof ServerApiException) {
             ServerApiException exception = (ServerApiException) throwable;
-            int code = exception.getCode();
-            if (code < 0) {
-                //异常
-                if (code == -1) {
-                    ToastUtils.showShort(R.string.http_request_timeout);
-                } else {
-                    ToastUtils.showShort(R.string.http_request_error);
-                }
-            } else {
-                //服务器返回错误
-                String mess = exception.getMessage();
-                ToastUtils.showShort(mess);
-            }
+            String mess = exception.getMessage();
+            ToastUtils.showShort(mess);
+        } else if (throwable instanceof SocketTimeoutException) {
+            ToastUtils.showShort(R.string.http_request_timeout);
+        } else {
+            ToastUtils.showShort(R.string.http_request_error);
         }
     }
 

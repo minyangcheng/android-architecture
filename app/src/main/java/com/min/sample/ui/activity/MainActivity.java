@@ -1,5 +1,6 @@
 package com.min.sample.ui.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 import com.min.common.util.GsonUtils;
 import com.min.common.util.LogUtils;
@@ -19,6 +22,8 @@ import com.min.core.base.BaseActivity;
 import com.min.core.helper.MultipartHelper;
 import com.min.core.helper.RxHttpResponseHelper;
 import com.min.core.helper.image.EasyImageSelector;
+import com.min.core.view.CustomDatePickerDialog;
+import com.min.core.view.CustomTimePickerDialog;
 import com.min.core.view.ImagePreviewDialog;
 import com.min.router.GlobalRouter;
 import com.min.sample.R;
@@ -54,6 +59,8 @@ public class MainActivity extends BaseActivity {
             new MainItem("Database数据库操作", "operateDb"),
             new MainItem("网络请求", "httpRequest"),
             new MainItem("上传文件", "uploadFile"),
+            new MainItem("选择时间", "selectTime"),
+            new MainItem("选择日期", "selectDate"),
     };
 
     @Override
@@ -197,4 +204,25 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
+    private void selectTime(){
+        CustomTimePickerDialog dialog =new CustomTimePickerDialog(this, 13, 11, new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                LogUtils.d(hourOfDay,minute);
+            }
+        });
+        dialog.show();
+    }
+
+    private void selectDate(){
+        CustomDatePickerDialog dialog = new CustomDatePickerDialog(this,2018,3,0, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                LogUtils.d(year,month,dayOfMonth);
+            }
+        });
+        dialog.show();
+    }
+
 }

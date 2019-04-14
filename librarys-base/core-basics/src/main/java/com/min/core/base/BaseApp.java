@@ -26,19 +26,21 @@ public class BaseApp extends Application {
         if (!CoreConstants.DEBUG) {
             return;
         }
-//        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
-//                .detectAll()
-//                .permitDiskReads()
-//                .permitDiskWrites()
-//                .penaltyLog()
-//                .build();
-//        StrictMode.setThreadPolicy(threadPolicy);
-//        StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
-//                .detectAll()
-//                .penaltyLog()
-//                .build();
-//        StrictMode.setVmPolicy(vmPolicy);
-//        TrafficStats.setThreadStatsTag(1);
+        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .permitDiskReads()
+                .permitDiskWrites()
+                .penaltyLog()
+                .build();
+        StrictMode.setThreadPolicy(threadPolicy);
+        StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
+                .detectActivityLeaks()
+                .detectLeakedClosableObjects()
+                .detectLeakedSqlLiteObjects()
+                .detectLeakedRegistrationObjects()
+                .penaltyLog()
+                .build();
+        StrictMode.setVmPolicy(vmPolicy);
     }
 
     public static Context getContext() {
