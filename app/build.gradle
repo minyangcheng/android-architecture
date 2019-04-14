@@ -31,8 +31,13 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner" //instrumentation test需要
 
-        buildConfigField 'String', 'API_SERVER_URL', '"https://www.min-api.com"'
-        buildConfigField 'String', 'API_UPDATE_URL', '"https://www.min-version.com"'
+        buildConfigField 'String', 'API_SERVER_URL', '"https://api.cheguo.com"'
+        buildConfigField 'String', 'API_UPDATE_URL', '"https://version.cheguo.com"'
+        buildConfigField 'String', 'API_UPLOAD_PIC_URL', '"https://file.cheguo.com"'
+
+        buildConfigField 'String', 'APP_SOURCE', '"ef198dc1d2c84b3dbc5774fe9b4085d5"'
+        buildConfigField 'String', 'APP_SECRET', '"70be7175c2ef4dcf9c06e3471a5e5633"'
+
         buildConfigField 'String', 'BUGLY_APPID', '"123"'
         buildConfigField 'String', 'GIT_VERSION', "\"${getGitVersion()}\""
         manifestPlaceholders = ['BAIDU_KEY'   : '123',

@@ -64,7 +64,7 @@ public class CGApiInterceptor implements Interceptor {
                 .post(formBuilder.build())
                 .build();
 
-        LogUtils.dTag(CoreConstants.HTTP_LOG, GsonUtils.toPrettyJson(map));
+        LogUtils.dTag(CoreConstants.HTTP_LOG, request.url(),GsonUtils.toPrettyJson(map));
 
         Response response = chain.proceed(request);
         return response;

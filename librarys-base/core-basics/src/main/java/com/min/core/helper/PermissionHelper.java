@@ -15,12 +15,11 @@ import java.util.List;
 public class PermissionHelper {
 
     public static final String[] APP_PERMISSIONS = new String[]{
-            Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.CALL_PHONE,
             Manifest.permission.RECORD_AUDIO
     };
 
@@ -75,7 +74,7 @@ public class PermissionHelper {
      * 录音权限检测
      */
     public static void requestAudioPermission(SimplePermissionCallback simplePermissionCallback) {
-        requestPermissions(simplePermissionCallback, VIDEO_PERMISSIONS);
+        requestPermissions(simplePermissionCallback, AUDIO_PERMISSIONS);
     }
 
     /**
@@ -105,7 +104,7 @@ public class PermissionHelper {
                     public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                         permissionListener.grantFail();
                     }
-                });
+                }).request();
     }
 
     public static abstract class SimplePermissionCallback implements OnPermissionListener {

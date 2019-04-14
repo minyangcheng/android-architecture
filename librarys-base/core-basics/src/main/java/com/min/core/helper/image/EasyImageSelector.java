@@ -90,7 +90,7 @@ public class EasyImageSelector {
     }
 
     public static File takenCameraPicture(Context context) throws Exception {
-        if (StringUtils.isEmpty(mCameraImageFilePath) || FileUtils.isFileExists(mCameraImageFilePath)) {
+        if (StringUtils.isEmpty(mCameraImageFilePath) || !FileUtils.isFileExists(mCameraImageFilePath)) {
             throw new RuntimeException("select image fail");
         }
         File imageFile = new File(mCameraImageFilePath);

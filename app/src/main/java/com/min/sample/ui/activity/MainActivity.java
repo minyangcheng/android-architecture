@@ -11,13 +11,18 @@ import android.view.View;
 import com.min.common.util.GsonUtils;
 import com.min.common.util.LogUtils;
 import com.min.common.util.ReflectUtils;
+import com.min.common.util.ToastUtils;
 import com.min.common.widget.TitleBar;
 import com.min.common.widget.divider.DividerGridItemDecoration;
 import com.min.common.widget.recyclerview.BaseRecyclerViewAdapter;
 import com.min.core.base.BaseActivity;
+import com.min.core.helper.MultipartHelper;
+import com.min.core.helper.RxHttpResponseHelper;
+import com.min.core.helper.image.EasyImageSelector;
 import com.min.core.view.ImagePreviewDialog;
 import com.min.router.GlobalRouter;
 import com.min.sample.R;
+import com.min.sample.data.DataManager;
 import com.min.sample.data.local.db.delegate.SearchDaoDelegate;
 import com.min.sample.data.model.MainItem;
 import com.min.sample.data.model.SearchBean;
@@ -25,6 +30,7 @@ import com.min.sample.ui.adapter.MainAdapter;
 import com.min.sample.ui.dialog.CarPopWin;
 import com.min.sample.ui.dialog.CarSelectDialogFragment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,9 +49,11 @@ public class MainActivity extends BaseActivity {
             new MainItem("使用weex容器", "openWeexContainer"),
             new MainItem("使用h5容器", "openH5Container"),
             new MainItem("图片预览", "imagePreview"),
-            new MainItem("Database数据库操作", "operateDb"),
             new MainItem("自定义Popupwindow", "openPopupWindow"),
             new MainItem("自定义DialogFragment", "openDialogFragment"),
+            new MainItem("Database数据库操作", "operateDb"),
+            new MainItem("网络请求", "httpRequest"),
+            new MainItem("上传文件", "uploadFile"),
     };
 
     @Override
@@ -137,14 +145,60 @@ public class MainActivity extends BaseActivity {
         hideHudDialog();
     }
 
-    void openPopupWindow() {
+    private void openPopupWindow() {
         CarPopWin popWin = new CarPopWin(this);
         popWin.showAsDropDown(mTitleBar, 0, 0, Gravity.RIGHT);
     }
 
-    void openDialogFragment() {
+    private void openDialogFragment() {
         CarSelectDialogFragment dialogFragment = new CarSelectDialogFragment();
         dialogFragment.show(getSupportFragmentManager(), dialogFragment.getTag());
     }
 
+    private void httpRequest() {
+        DataManager.getMobileService()
+                .login("15257178923", "123456a")
+                .compose(RxHttpResponseHelper.handleServerResult())
+                .doOnSubscribe(() -> showHudDialog())
+                .doOnTerminate(() -> hideHudDialog())
+                .subscribe(data -> {
+                            LogUtils.json(data);
+                        }
+                        , throwable -> {
+                            LogUtils.e(throwable);
+                        });
+    }
+
+    private void uploadFile() {
+        EasyImageSelector.openCamera(this, null);
+    }
+
+    private void uploadFile_(File imageFile) {
+        DataManager.getMobileService()
+                .uploadFile(MultipartHelper.keyValuePart("name", "1111"), MultipartHelper.imageMultiPart("file", imageFile))
+                .compose(RxHttpResponseHelper.io_main())
+                .subscribe(data -> {
+                            LogUtils.json(data);
+                        }
+                        , throwable -> {
+                            LogUtils.e(throwable);
+                        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        EasyImageSelector.handleActivityResult(requestCode, resultCode, data, this, new EasyImageSelector.Callbacks() {
+
+            @Override
+            public void onImagePickerError(Exception e, EasyImageSelector.ImageSource source) {
+                ToastUtils.showShort("选择图片失败！");
+            }
+
+            @Override
+            public void onImagePicked(File imageFile, EasyImageSelector.ImageSource source) {
+                uploadFile_(imageFile);
+            }
+        });
+    }
 }

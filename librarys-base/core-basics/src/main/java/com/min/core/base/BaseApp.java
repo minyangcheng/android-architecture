@@ -2,6 +2,7 @@ package com.min.core.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.TrafficStats;
 import android.os.StrictMode;
 
 import com.min.common.util.LogUtils;
@@ -25,18 +26,19 @@ public class BaseApp extends Application {
         if (!CoreConstants.DEBUG) {
             return;
         }
-        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
-                .detectAll()
-                .permitDiskReads()
-                .permitDiskWrites()
-                .penaltyLog()
-                .build();
-        StrictMode.setThreadPolicy(threadPolicy);
-        StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .build();
-        StrictMode.setVmPolicy(vmPolicy);
+//        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
+//                .detectAll()
+//                .permitDiskReads()
+//                .permitDiskWrites()
+//                .penaltyLog()
+//                .build();
+//        StrictMode.setThreadPolicy(threadPolicy);
+//        StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
+//                .detectAll()
+//                .penaltyLog()
+//                .build();
+//        StrictMode.setVmPolicy(vmPolicy);
+//        TrafficStats.setThreadStatsTag(1);
     }
 
     public static Context getContext() {

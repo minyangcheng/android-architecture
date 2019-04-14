@@ -1,6 +1,5 @@
 package com.min.sample.ui.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -13,8 +12,6 @@ import com.min.sample.R;
 import com.min.sample.contract.LoginContract;
 import com.min.sample.presenter.LoginPresenter;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class MVPActivity extends BaseActivity implements LoginContract.View {
 
@@ -28,15 +25,12 @@ public class MVPActivity extends BaseActivity implements LoginContract.View {
 
     private LoginContract.Presenter mLoginPresenter;
 
-    private static List<Activity> mm = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
         mLoginPresenter = new LoginPresenter();
         mLoginPresenter.attachView(this);
-//        mm.add(this);
     }
 
     @Override

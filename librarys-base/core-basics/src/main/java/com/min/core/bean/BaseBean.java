@@ -9,8 +9,6 @@ public class BaseBean<T> {
     public String message;
     public T data;
 
-    public int totalItem;
-
     public boolean isSuccess() {
         return code == 10000;
     }
