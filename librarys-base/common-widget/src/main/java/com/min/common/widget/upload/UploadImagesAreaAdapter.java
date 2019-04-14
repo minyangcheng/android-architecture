@@ -36,7 +36,7 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
 
     @Override
     public ItemViewHolder onCreateDataItemViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.upload_image_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_upload_image, parent, false);
         ItemViewHolder viewHolder = new ItemViewHolder(view);
         setItemHeight(viewHolder.uploadImageView);
         return viewHolder;

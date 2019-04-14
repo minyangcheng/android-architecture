@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.za.cls.widget.img_upload_component.UploadImageView
+    <com.min.common.widget.upload.UploadImageView
         android:id="@+id/uiv"
         android:layout_width="match_parent"
         android:layout_margin="3dp"
@@ -19,4 +19,5 @@
         android:layout_gravity="top|right"
         android:src="@drawable/icon_false"
         android:visibility="gone" />
+
 </FrameLayout>

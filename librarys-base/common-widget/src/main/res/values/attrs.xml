@@ -78,4 +78,15 @@
         <attr name="showCenter" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CellView">
+        <attr name="edit_mode" format="boolean"/>
+        <attr name="label" format="string|reference"/>
+        <attr name="value" format="string|reference"/>
+        <attr name="placeholder" format="string|reference"/>
+        <attr name="unit" format="string|reference"/>
+        <attr name="input_type" format="integer"/>
+        <attr name="max_length" format="integer"/>
+        <attr name="decimal_length" format="integer"/>
+    </declare-styleable>
+
 </resources>

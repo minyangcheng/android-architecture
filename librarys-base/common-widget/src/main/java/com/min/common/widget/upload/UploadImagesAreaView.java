@@ -2,11 +2,9 @@ package com.min.common.widget.upload;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -222,7 +220,7 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
     }
 
     private View getHeaderOrFooterView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.upload_image_item, this, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_upload_image, this, false);
         UploadImageView uiv = (UploadImageView) view.findViewById(R.id.uiv);
         if (mFooterImgId == 0) {
             uiv.getImageView().setImageResource(R.drawable.bg_image_add);
