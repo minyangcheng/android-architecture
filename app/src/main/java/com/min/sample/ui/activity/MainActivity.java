@@ -162,10 +162,8 @@ public class MainActivity extends BaseActivity {
                 .doOnSubscribe(() -> showHudDialog())
                 .doOnTerminate(() -> hideHudDialog())
                 .subscribe(data -> {
-                            LogUtils.json(data);
                         }
                         , throwable -> {
-                            LogUtils.e(throwable);
                         });
     }
 
@@ -178,10 +176,8 @@ public class MainActivity extends BaseActivity {
                 .uploadFile(MultipartHelper.keyValuePart("name", "1111"), MultipartHelper.imageMultiPart("file", imageFile))
                 .compose(RxHttpResponseHelper.io_main())
                 .subscribe(data -> {
-                            LogUtils.json(data);
                         }
                         , throwable -> {
-                            LogUtils.e(throwable);
                         });
     }
 

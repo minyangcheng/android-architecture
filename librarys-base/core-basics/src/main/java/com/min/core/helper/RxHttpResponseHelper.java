@@ -50,7 +50,7 @@ public class RxHttpResponseHelper {
                                 if (subscriber.isUnsubscribed()) {
                                     return;
                                 }
-                                LogUtils.dTag(CoreConstants.HTTP_LOG, e);
+                                LogUtils.eTag(CoreConstants.HTTP_LOG, e);
                                 subscriber.onError(new ServerApiException(-1, e.getMessage()));
                             }
 
