@@ -107,11 +107,11 @@ public abstract class BaseFragment extends RxFragment {
         Log.d(tag, this.getClass().getSimpleName() + "  lazyLoad");
     }
 
-    protected void showHudDialog() {
+    public void showHudDialog() {
         showHudDialog(true);
     }
 
-    protected void showHudDialog(boolean canCancel) {
+    public void showHudDialog(boolean canCancel) {
         if (mHudDialog == null) {
             mHudDialog = HudDialog.createProgressHud(getContext(), null, canCancel, null);
         }
@@ -120,7 +120,7 @@ public abstract class BaseFragment extends RxFragment {
         }
     }
 
-    protected void hideHudDialog() {
+    public void hideHudDialog() {
         if (mHudDialog != null && mHudDialog.isShowing()) {
             mHudDialog.dismiss();
         }

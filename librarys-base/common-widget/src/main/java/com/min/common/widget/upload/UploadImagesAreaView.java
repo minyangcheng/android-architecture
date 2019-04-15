@@ -1,10 +1,8 @@
 package com.min.common.widget.upload;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -23,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Created by minyangcheng on 2019/04/12.
  */
@@ -31,11 +28,9 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
 
     private static final String TAG = UploadImagesAreaView.class.getSimpleName();
 
-    public String PREFIX = "UploadImagesAreaView";
-    public String ADD_PREFIX = "UploadImagesAreaViewAdd";
+    private static String LAST_OPERATE_NAMESPACE = "UploadImagesAreaView";
 
     private Object mHostObject;
-    private Context mContext;
 
     private RecyclerView mRv;
     private UploadImagesAreaAdapter mAdapter;
@@ -48,22 +43,25 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
     private int[] mNoCheckArr;
     private int mColumnNum;
     private String mHeadContent;
+    private String explainText;
     private int mMaxNum;
     private int mFooterImgId;
-    private boolean mShowExplainFlag;
-    private String explainText;
-    private int mItemHeight;
+    private float mRatio;
     private boolean mShowAddFlag;
     private boolean mShowAddImageInTail;
 
-    private OnAddImageListener mOnAddImageListener;
     private OnExplainListener mExplainListener;
     private OnImageCountChangeListener mOnImageCountChangeListener;
     private OnSingleUploadSuccessListener mOnSingleUploadSuccessListener;
-    private OnSingleDeleteListener onSingleDeleteListener;
-    public OnShowGalleryListener mOnShowGalleryListener;
+    private OnSingleDeleteListener mOnSingleDeleteListener;
+    public OnPlayFileListener mOnPlayFileListener;
 
-    private IUploadImagesHandler mUploadImagesHandler;
+    private AbstractUploadImagesHandler mUploadImagesHandler;
+
+    private String nameSpace;
+    private String mToastHint;
+
+    private int mOperatePos;
 
     public UploadImagesAreaView(Context context) {
         this(context, null);
@@ -75,7 +73,6 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
 
     public UploadImagesAreaView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mContext = context;
         init(attrs, defStyle);
     }
 
@@ -85,13 +82,13 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
 
         int textArrResId = a.getResourceId(R.styleable.UploadImagesAreaView_imageNameArr, 0);
         if (textArrResId != 0) {
-            mImageNameArr = mContext.getResources().getStringArray(textArrResId);
+            mImageNameArr = getContext().getResources().getStringArray(textArrResId);
         } else {
             mImageNameArr = new String[0];
         }
         int imageResId = a.getResourceId(R.styleable.UploadImagesAreaView_imageResArr, 0);
         if (imageResId != 0) {
-            TypedArray ta = mContext.getResources().obtainTypedArray(imageResId);
+            TypedArray ta = getContext().getResources().obtainTypedArray(imageResId);
             int len = ta.length();
             mImageResArr = new int[len];
             for (int i = 0; i < len; i++) {
@@ -105,14 +102,30 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         mMaxNum = a.getInt(R.styleable.UploadImagesAreaView_maxNum, 18);
         mShowAddFlag = a.getBoolean(R.styleable.UploadImagesAreaView_showAdd, false);
         mShowAddImageInTail = a.getBoolean(R.styleable.UploadImagesAreaView_showAddInTail, true);
-        mShowExplainFlag = a.getBoolean(R.styleable.UploadImagesAreaView_showExplain, false);
         explainText = a.getString(R.styleable.UploadImagesAreaView_explainText);
         mFooterImgId = a.getResourceId(R.styleable.UploadImagesAreaView_footerImg, 0);
         String noCheckStr = a.getString(R.styleable.UploadImagesAreaView_noCheck);
         setNoCheckArr(noCheckStr);
         mHeadContent = a.getString(R.styleable.UploadImagesAreaView_headContent);
-        mItemHeight = a.getDimensionPixelOffset(R.styleable.UploadImagesAreaView_itemHeight, 0);
+        mRatio = a.getFloat(R.styleable.UploadImagesAreaView_radio, 1.0f);
         mColumnNum = a.getInt(R.styleable.UploadImagesAreaView_columnNum, 3);
+        nameSpace = a.getString(R.styleable.UploadImagesAreaView_namespace);
+        if(TextUtils.isEmpty(nameSpace)){
+            nameSpace = "UploadImagesAreaView";
+        }
+        mToastHint = a.getString(R.styleable.UploadImagesAreaView_toastHint);
+        if(TextUtils.isEmpty(mToastHint)){
+            mToastHint = "文件";
+        }
+        String handler = a.getString(R.styleable.UploadImagesAreaView_handler);
+        if (TextUtils.isEmpty(handler)) {
+            throw new RuntimeException("UploadImagesAreaView should been set UploadImagesHandler");
+        }
+        try {
+            mUploadImagesHandler = (AbstractUploadImagesHandler) Class.forName(handler).getConstructor(UploadImagesAreaView.class).newInstance(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         a.recycle();
 
         if (mImageNameArr.length == 0 && mImageResArr.length == 0) {
@@ -122,8 +135,9 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
     }
 
     private void initView() {
-        LayoutInflater.from(mContext).inflate(R.layout.view_upload_image_area, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.view_upload_image_area, this, true);
         findViews();
+        initRv();
         mAdapter.setData(createImageDataList());
         if (mShowAddFlag && mShowAddImageInTail) {
             addFooter();
@@ -131,6 +145,42 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
             addHeader();
         }
         setHeaderContent();
+    }
+
+    private void initRv() {
+        GridLayoutManager manager = new GridLayoutManager(getContext(), mColumnNum);
+        mRv.setLayoutManager(manager);
+        mAdapter = new UploadImagesAreaAdapter(getContext(), mUploadImagesHandler);
+        mAdapter.setOnItemClickLitener(this);
+        mAdapter.setColumn(mColumnNum, mRatio);
+        mRv.setAdapter(mAdapter);
+        mAdapter.setOnDeleteIvClickListener(new UploadImagesAreaAdapter.OnDeleteIvClickListener() {
+            @Override
+            public void onDeleteIvClick(int position) {
+                UploadImageBean bean = mAdapter.getData().get(position);
+                if (mOnSingleDeleteListener != null) {
+                    mOnSingleDeleteListener.delete(position);
+                } else {
+                    if (bean.isAdd) {
+                        deleteAddItem(position);
+                    } else {
+                        bean.status = UploadImageBean.UPLOAD_PREPARED;
+                        bean.path = null;
+                        bean.url = null;
+                        bean.filePath = null;
+                        bean.fileUrl = null;
+                        bean.relationObj = null;
+                        notifyDataSetChange();
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteAddItem(int position) {
+        mAdapter.getData().remove(position);
+        notifyDataSetChange();
+        watchDataList();
     }
 
     private void setNoCheckArr(String str) {
@@ -173,10 +223,10 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
             headView.setVisibility(GONE);
         } else {
             headView.setVisibility(VISIBLE);
-            mInfoTv = findViewById(R.id.tv_info);
-            mExplainTv = findViewById(R.id.tv_explain);
-            if (mShowExplainFlag) {
+            mInfoTv.setText(mHeadContent);
+            if (!TextUtils.isEmpty(explainText)) {
                 mExplainTv.setVisibility(VISIBLE);
+                mExplainTv.setText(explainText);
                 mExplainTv.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -185,19 +235,7 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
                         }
                     }
                 });
-                if (!TextUtils.isEmpty(explainText)) {
-                    mExplainTv.setText(explainText);
-                }
-            } else {
-                mExplainTv.setVisibility(GONE);
             }
-            mInfoTv.setText(mHeadContent);
-        }
-    }
-
-    public void setHeaderContent(String headerContent) {
-        if (mInfoTv != null) {
-            mInfoTv.setText(headerContent);
         }
     }
 
@@ -220,8 +258,8 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
     }
 
     private View getHeaderOrFooterView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_upload_image, this, false);
-        UploadImageView uiv = (UploadImageView) view.findViewById(R.id.uiv);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_upload_image, this, false);
+        UploadImageView uiv = view.findViewById(R.id.uiv);
         if (mFooterImgId == 0) {
             uiv.getImageView().setImageResource(R.drawable.bg_image_add);
         } else {
@@ -232,15 +270,13 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
             @Override
             public void onClick(View v) {
                 if (mAdapter.getData().size() < mMaxNum) {
-                    addImage();
+                    LAST_OPERATE_NAMESPACE = nameSpace;
+                    mOperatePos = -1;
+                    showSelectImageDialog();
                 }
             }
         });
         return view;
-    }
-
-    private void addImage() {
-        showSelectImageDialog(ADD_PREFIX + "_");
     }
 
     private List<UploadImageBean> createImageDataList() {
@@ -254,40 +290,9 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
     }
 
     private void findViews() {
+        mInfoTv = findViewById(R.id.tv_info);
+        mExplainTv = findViewById(R.id.tv_explain);
         mRv = findViewById(R.id.rv);
-        GridLayoutManager manager = new GridLayoutManager(mContext, mColumnNum);
-        mRv.setLayoutManager(manager);
-        mAdapter = new UploadImagesAreaAdapter(mContext, mUploadImagesHandler);
-        mAdapter.setOnItemClickLitener(this);
-        mAdapter.setClomNum(mColumnNum);
-        mRv.setAdapter(mAdapter);
-        mAdapter.setOnDeleteIvClickListener(new UploadImagesAreaAdapter.OnDeleteIvClickListener() {
-            @Override
-            public void onDeleteIvClick(int position) {
-                UploadImageBean bean = mAdapter.getData().get(position);
-                if (onSingleDeleteListener != null) {
-                    onSingleDeleteListener.delete(position);
-                } else {
-                    if (bean.isAdd) {
-                        deleteLocalImage(position);
-                    } else {
-                        bean.status = UploadImageBean.UPLOAD_PREPARED;
-                        bean.path = null;
-                        bean.url = null;
-                        bean.filePath = null;
-                        bean.fileUrl = null;
-                        bean.relationObj = null;
-                        notifyDataSetChange();
-                    }
-                }
-            }
-        });
-    }
-
-    public void deleteLocalImage(int position) {
-        mAdapter.getData().remove(position);
-        notifyDataSetChange();
-        watchDataList();
     }
 
     @Override
@@ -295,73 +300,55 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         UploadImageBean bean = mAdapter.getData().get(position);
         if (isEnabled()) {
             if (bean.status != UploadImageBean.UPLOAD_PREPARED) {
-                showGallery(position);
+                mUploadImagesHandler.playFile(position);
             } else {
-                String prefix = PREFIX + "_" + position + "_";
-                showSelectImageDialog(prefix);
+                LAST_OPERATE_NAMESPACE = nameSpace;
+                mOperatePos = position;
+                showSelectImageDialog();
             }
         } else {
-            if (mOnShowGalleryListener == null) {
-                showGallery(position);
+            if (mOnPlayFileListener == null) {
+                mUploadImagesHandler.playFile(position);
             } else {
-                mOnShowGalleryListener.showGallery(position);
+                mOnPlayFileListener.playFile(position);
             }
         }
-
     }
 
-    private void showGallery(int position) {
-
+    private void showSelectImageDialog() {
+        mUploadImagesHandler.selectFile(mHostObject);
     }
 
-    private void showSelectImageDialog(final String prefix) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-//                .setItems(new String[]{"拍照", "相册"}, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (which == 0) {
-//                            mUploadImagesHandler.openCamera(prefix, mHostObject);
-//                        } else if (which == 1) {
-//                            mUploadImagesHandler.openGalleryPicker(prefix, mHostObject);
-//                        }
-//                    }
-//                });
-//        builder.show();
-        mUploadImagesHandler.selectFile(prefix,mHostObject);
+    public void handleResult(int requestCode, int resultCode, Intent data) {
+        mUploadImagesHandler.handleFile(requestCode, resultCode, data);
     }
 
-    public void handleResult(UploadImagesAreaView uploadImagesAreaView, int requestCode, int resultCode, Intent data) {
-        mUploadImagesHandler.handleResult(this, requestCode, resultCode, data);
-    }
-
-    private void imagePicked(File imageFile) {
-        String prefix = getPrefixFromFileName(imageFile.getName());
-        if (!TextUtils.isEmpty(prefix)) {
-            if (prefix.equals(PREFIX)) {
-                int pos = getPositionFromFileName(imageFile.getName());
-                if (pos >= 0) {
-                    UploadImageBean uploadImageBean = mAdapter.getData().get(pos);
-                    uploadImageBean.path = imageFile.getAbsolutePath();
-
-                    notifyDataSetChange();
-                    uploadImage(imageFile, pos);
-                }
-            } else if (prefix.equals(ADD_PREFIX)) {
-                UploadImageBean bean = new UploadImageBean(imageFile.getAbsolutePath(), "");
-
-                bean.isAdd = true;
-                if (mShowAddImageInTail) {
-                    mAdapter.getData().add(bean);
-                    notifyDataSetChange();
-                    uploadImage(imageFile, mAdapter.getData().size() - 1);
-                } else {
-                    mAdapter.getData().add(0, bean);
-                    notifyDataSetChange();
-                    uploadImage(imageFile, 0);
-                }
-                watchDataList();
-            }
+    public void imagePicked(File imageFile) {
+        if (!LAST_OPERATE_NAMESPACE.equals(nameSpace)) {
+            return;
         }
+        UploadImageBean bean;
+        if (mOperatePos >= 0) {
+            bean = mAdapter.getData().get(mOperatePos);
+            bean.path = imageFile.getAbsolutePath();
+
+            notifyDataSetChange();
+            uploadFile(imageFile, mOperatePos);
+        } else {
+            bean = new UploadImageBean(imageFile.getAbsolutePath(), "");
+            bean.isAdd = true;
+            if (mShowAddImageInTail) {
+                mAdapter.getData().add(bean);
+                notifyDataSetChange();
+                uploadFile(imageFile, mAdapter.getData().size() - 1);
+            } else {
+                mAdapter.getData().add(0, bean);
+                notifyDataSetChange();
+                uploadFile(imageFile, 0);
+            }
+            watchDataList();
+        }
+        mUploadImagesHandler.handleUploadImageBean(bean);
     }
 
     private void watchDataList() {
@@ -387,12 +374,12 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         }
     }
 
-    private void uploadImage(final File imageFile, final int pos) {
-        mUploadImagesHandler.uploadFile(this,imageFile,pos);
+    private void uploadFile(File imageFile, final int pos) {
+        updateStatusInPos_ing(pos);
+        mUploadImagesHandler.uploadFile(imageFile, pos);
     }
 
     public boolean checkResult() {
-        String hintStr = "";
         List<UploadImageBean> uploadImageList = mAdapter.getData();
         int mustInput = mImageResArr.length;
         UploadImageBean bean = null;
@@ -409,7 +396,7 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
                 if (i >= 0 && i < mustInput) {
                     mess = bean.name + "正在上传中...";
                 } else {
-                    mess = "还有" + hintStr + "正在上传中...";
+                    mess = "还有" + mToastHint + "正在上传中...";
                 }
                 break;
             }
@@ -417,13 +404,13 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
                 if (i >= 0 && i < mustInput) {
                     mess = bean.name + "上传失败...";
                 } else {
-                    mess = "还有" + hintStr + "上传失败...";
+                    mess = "有" + mToastHint + "上传失败...";
                 }
                 break;
             }
         }
         if (!TextUtils.isEmpty(mess)) {
-            Toast.makeText(mContext, mess, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), mess, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -435,10 +422,6 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
             resultList.add(mAdapter.getData().get(i).url);
         }
         return resultList;
-    }
-
-    public List<UploadImageBean> getUploadImageBeanList() {
-        return mAdapter.getData();
     }
 
     public void setData(List<UploadImageBean> dataList) {
@@ -453,10 +436,14 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         watchDataList();
     }
 
-    public void setData(int textArrResId, int imageResId) {
-        mImageNameArr = mContext.getResources().getStringArray(textArrResId);
+    public String getNameSpace() {
+        return nameSpace;
+    }
 
-        TypedArray ta = mContext.getResources().obtainTypedArray(imageResId);
+    public void setData(int textArrResId, int imageResId) {
+        mImageNameArr = getContext().getResources().getStringArray(textArrResId);
+
+        TypedArray ta = getContext().getResources().obtainTypedArray(imageResId);
         int len = ta.length();
         mImageResArr = new int[len];
         for (int i = 0; i < len; i++) {
@@ -467,13 +454,22 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         watchDataList();
     }
 
-    private void updateStatusInPos(int pos, int status) {
-        if (pos < getData().size()) {
-            updateStatusInPosAndUrl(pos, status, null);
-        }
+    public void updateStatusInPos_ing(int pos) {
+        updateStatusInPos(pos, UploadImageBean.UPLOAD_ING, null);
     }
 
-    private void updateStatusInPosAndUrl(int pos, int status, String url) {
+    public void updateStatusInPos_fail(int pos) {
+        updateStatusInPos(pos, UploadImageBean.UPLOAD_FAIL, null);
+    }
+
+    public void updateStatusInPos_success(int pos, String url) {
+        if (mOnSingleUploadSuccessListener != null) {
+            mOnSingleUploadSuccessListener.success(pos, getData().get(pos));
+        }
+        updateStatusInPos(pos, UploadImageBean.UPLOAD_SUCCESS, url);
+    }
+
+    public void updateStatusInPos(int pos, int status, String url) {
         if (pos < getData().size()) {
             UploadImageBean bean = mAdapter.getData().get(pos);
             bean.status = status;
@@ -482,43 +478,19 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         }
     }
 
-    private int getPositionFromFileName(String fileName) {
-        String[] arr = fileName.split("_");
-        int pos = -1;
-        try {
-            pos = Integer.parseInt(arr[1]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return pos;
-    }
-
-    private String getPrefixFromFileName(String fileName) {
-        if (TextUtils.isEmpty(fileName)) {
-            return null;
-        }
-        String[] arr = fileName.split("_");
-        return arr[0];
-    }
-
-    public void setHostActivity(Object hostObject, String prefix) {
-        Fragment fragment = hostObject instanceof Fragment ? (Fragment) hostObject : null;
-        Activity activity = hostObject instanceof Activity ? (Activity) hostObject : null;
-        if (fragment == null && activity == null) return;
-        Context context = fragment != null ? fragment.getContext() : activity;
-
+    /**
+     * @param hostObject hostObject Fragment 或 Activity
+     * @param nameSpace  每个控件的命名控件
+     */
+    public void setHostActivity(Object hostObject, String nameSpace) {
         this.mHostObject = hostObject;
-        this.mContext = context;
-        if (!TextUtils.isEmpty(prefix)) {
-            this.PREFIX = prefix;
-            this.ADD_PREFIX = prefix + "Add";
-        }
+        this.nameSpace = nameSpace;
     }
 
     @Override
     protected void onDetachedFromWindow() {
+        mUploadImagesHandler.destroy();
         super.onDetachedFromWindow();
-
     }
 
     @Override
@@ -542,10 +514,6 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         }
     }
 
-    public String[] getImageNameArr() {
-        return mImageNameArr;
-    }
-
     public void notifyDataSetChange() {
         mAdapter.notifyDataSetChanged();
     }
@@ -558,6 +526,10 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         return mAdapter;
     }
 
+    public Object getHost() {
+        return mHostObject;
+    }
+
     public void setOnExplainListener(OnExplainListener explainListener) {
         this.mExplainListener = explainListener;
     }
@@ -566,20 +538,17 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         mOnImageCountChangeListener = listener;
     }
 
-    public void setOnSingleUploadSuccessListener(OnSingleUploadSuccessListener mOnSingleUploadSuccessListener) {
+    public void setOnSingleUploadSuccessListener(OnSingleUploadSuccessListener
+                                                         mOnSingleUploadSuccessListener) {
         this.mOnSingleUploadSuccessListener = mOnSingleUploadSuccessListener;
     }
 
     public void setOnSingleDeleteListener(OnSingleDeleteListener onSingleDeleteListener) {
-        this.onSingleDeleteListener = onSingleDeleteListener;
+        this.mOnSingleDeleteListener = onSingleDeleteListener;
     }
 
-    public void setOnShowGalleryListener(OnShowGalleryListener listener) {
-        this.mOnShowGalleryListener = listener;
-    }
-
-    public interface OnAddImageListener {
-        void addImage(int position);
+    public void setOnShowGalleryListener(OnPlayFileListener listener) {
+        this.mOnPlayFileListener = listener;
     }
 
     public interface OnExplainListener {
@@ -598,12 +567,8 @@ public class UploadImagesAreaView extends LinearLayout implements BaseRecyclerVi
         void delete(int position);
     }
 
-    public interface OnShowGalleryListener {
-        void showGallery(int pos);
-    }
-
-    public void setHideCameraIndicator() {
-        mAdapter.setHideCameraIndicator();
+    public interface OnPlayFileListener {
+        void playFile(int pos);
     }
 
 }

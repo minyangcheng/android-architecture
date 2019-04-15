@@ -60,8 +60,8 @@ public class UploadImageBean<T> {
         return uploadImageBean;
     }
 
-    public static UploadImageBean newInstanceForAddImageSuccess(String name, int resId, String url) {
-        UploadImageBean uploadImageBean = newInstanceForImageSuccess(name, resId, url);
+    public static UploadImageBean newInstanceForAddImageSuccess(String name, String url) {
+        UploadImageBean uploadImageBean = newInstanceForImageSuccess(name, 0, url);
         uploadImageBean.isAdd = true;
         return uploadImageBean;
     }

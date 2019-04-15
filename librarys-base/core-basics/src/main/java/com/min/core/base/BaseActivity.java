@@ -34,7 +34,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         super.onDestroy();
     }
 
-    protected void showHudDialog(boolean canCancel) {
+    public void showHudDialog(boolean canCancel) {
         if (mProgressDialog == null) {
             mProgressDialog = HudDialog.createProgressHud(getContext(), null, canCancel, null);
         }
@@ -43,11 +43,11 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         }
     }
 
-    protected void showHudDialog() {
+    public void showHudDialog() {
         showHudDialog(true);
     }
 
-    protected void hideHudDialog() {
+    public void hideHudDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }

@@ -1,17 +1,19 @@
 package com.min.sample.ui.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.min.common.util.LogUtils;
 import com.min.common.widget.CellView;
+import com.min.common.widget.upload.UploadImagesAreaView;
 import com.min.core.base.BaseFragment;
 import com.min.core.helper.inject.annotation.BindView;
 import com.min.core.helper.inject.annotation.OnClick;
 import com.min.sample.R;
-
 
 public class ContentFragment extends BaseFragment {
 
@@ -25,6 +27,8 @@ public class ContentFragment extends BaseFragment {
     CellView mPlaceCv;
     @BindView(R.id.cv_idcard)
     CellView mIdcardCv;
+    @BindView(R.id.uia_images)
+    UploadImagesAreaView mImageUia;
 
     public ContentFragment() {
     }
@@ -50,7 +54,7 @@ public class ContentFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mContentTv.setText(content);
-        mIdcardCv.setValue(null);
+        mImageUia.setHostActivity(this, "sample");
     }
 
     @Override
@@ -61,6 +65,13 @@ public class ContentFragment extends BaseFragment {
     @OnClick(R.id.cv_place)
     void clickPlaceCell(){
         LogUtils.d(mIdcardCv.getValue());
+//        mImageUia.checkResult();
+        Toast.makeText(getContext(), "asdfasdf", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mImageUia.handleResult(requestCode, resultCode, data);
+    }
 }

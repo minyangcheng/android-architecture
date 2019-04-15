@@ -19,6 +19,7 @@ import com.min.common.util.ScreenUtils;
 import com.min.core.R;
 import com.min.core.helper.ImageLoaderHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.senab.photoview.PhotoView;
@@ -36,6 +37,18 @@ public class ImagePreviewDialog extends AppCompatDialog {
 
     private int mImageWidth;
     private int mImageHeight;
+
+    public static void showImagePreview(Context context, List<String> imageList, int pos) {
+        if (imageList == null || imageList.size() == 0) {
+            return;
+        }
+        List<ImageItem> imageItemList = new ArrayList<>();
+        for (int i = 0; i < imageList.size(); i++) {
+            imageItemList.add(new ImageItem(imageList.get(i)));
+        }
+        ImagePreviewDialog dialog = new ImagePreviewDialog(context, imageItemList, pos);
+        dialog.show();
+    }
 
     public ImagePreviewDialog(Context context, List<ImageItem> imageItemList, int pos) {
         super(context);
@@ -128,7 +141,7 @@ public class ImagePreviewDialog extends AppCompatDialog {
 
         public String source;
 
-        public ImageItem(String source){
+        public ImageItem(String source) {
             this.source = source;
         }
 

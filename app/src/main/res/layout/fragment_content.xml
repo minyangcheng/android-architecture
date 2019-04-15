@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         app:edit_mode="false"
         app:label="选择地区"
-        app:value="aa"/>
+        app:value="北京"/>
 
     <com.min.common.widget.CellView
         android:id="@+id/cv_idcard"
@@ -28,5 +28,22 @@
         app:label="身份证号码"
         app:placeholder="pls input"
         app:input_type="1"/>
+
+    <com.min.common.widget.upload.UploadImagesAreaView
+        android:id="@+id/uia_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        app:columnNum="4"
+        app:radio="1"
+        app:showAdd="true"
+        app:maxNum="5"
+        app:showAddInTail="false"
+        app:headContent="选择图片"
+        app:handler="com.min.sample.util.UploadSelectImageHandler"/>
 
 </LinearLayout>

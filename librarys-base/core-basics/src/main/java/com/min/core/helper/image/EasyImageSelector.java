@@ -1,9 +1,11 @@
 package com.min.core.helper.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.min.common.util.FileIOUtils;
@@ -43,8 +45,8 @@ public class EasyImageSelector {
      */
     public static void openCamera(final Object obj, final String prefix) {
         if (obj == null) return;
-        final BaseFragment fragment = obj instanceof BaseFragment ? (BaseFragment) obj : null;
-        final BaseActivity activity = obj instanceof BaseActivity ? (BaseActivity) obj : null;
+        final Fragment fragment = obj instanceof Fragment ? (Fragment) obj : null;
+        final Activity activity = obj instanceof Activity ? (Activity) obj : null;
         if (fragment == null && activity == null) return;
         PermissionHelper.requestCameraPermission(new PermissionHelper.SimplePermissionCallback() {
             @Override
@@ -71,8 +73,8 @@ public class EasyImageSelector {
      */
     public static void openGalleryPicker(final Object obj, final String prefix) {
         if (obj == null) return;
-        final BaseFragment fragment = obj instanceof BaseFragment ? (BaseFragment) obj : null;
-        final BaseActivity activity = obj instanceof BaseActivity ? (BaseActivity) obj : null;
+        final Fragment fragment = obj instanceof Fragment ? (Fragment) obj : null;
+        final Activity activity = obj instanceof Activity ? (Activity) obj : null;
         if (fragment == null && activity == null) return;
         PermissionHelper.requestCameraPermission(new PermissionHelper.SimplePermissionCallback() {
             @Override

@@ -32,6 +32,10 @@ public interface MobileService {
     @POST(BuildConfig.API_UPLOAD_PIC_URL + "/upload/uploadfileforaliyun.do?filesource=10f4fe1edeae11e5b7be086266812821&extname=.jpg")
     Observable<UploadFileRespBean> uploadFile(@Part MultipartBody.Part namePart, @Part MultipartBody.Part photoPart);
 
+    @Multipart
+    @POST(BuildConfig.API_UPLOAD_PIC_URL + "/upload/uploadfileforaliyun.do?filesource=10f4fe1edeae11e5b7be086266812821&extname=.jpg")
+    Observable<UploadFileRespBean> uploadFile(@Part MultipartBody.Part photoPart);
+
     class Creator {
 
         public static MobileService newMobileService() {

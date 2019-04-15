@@ -1,7 +1,6 @@
 package com.min.common.widget.upload;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -21,15 +20,12 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
 
     private OnDeleteIvClickListener mOnDeleteIvClickListener;
 
-    private int mColumnNum;
     private int mHeight;
     private boolean mEnable = true;
-    private boolean showCenter;
-    private boolean hideCameraIndicator = false;
 
-    private IUploadImagesHandler mUploadImagesHandler;
+    private AbstractUploadImagesHandler mUploadImagesHandler;
 
-    public UploadImagesAreaAdapter(Context context, IUploadImagesHandler uploadImagesHandler) {
+    public UploadImagesAreaAdapter(Context context, AbstractUploadImagesHandler uploadImagesHandler) {
         super(context);
         this.mUploadImagesHandler = uploadImagesHandler;
     }
@@ -42,10 +38,6 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
         return viewHolder;
     }
 
-    public void setHideCameraIndicator() {
-        hideCameraIndicator = true;
-    }
-
     @Override
     public void onBindDataItemViewHolder(ItemViewHolder holder, final int position) {
         UploadImageBean bean = getData().get(position);
@@ -53,19 +45,14 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
         holder.uploadImageView.setStatus(bean.status);
 
         if (!TextUtils.isEmpty(bean.url)) {
-            holder.uploadImageView.getImageView().setScaleType(ImageView.ScaleType.FIT_XY);
-            mUploadImagesHandler.loadImage(bean.url,holder.uploadImageView.getImageView());
+            holder.uploadImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mUploadImagesHandler.displayImage(bean.url, holder.uploadImageView.getImageView());
         } else if (!TextUtils.isEmpty(bean.path)) {
-            holder.uploadImageView.getImageView().setScaleType(ImageView.ScaleType.FIT_XY);
-            mUploadImagesHandler.loadImage(bean.path,holder.uploadImageView.getImageView());
+            holder.uploadImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mUploadImagesHandler.displayImage(bean.path, holder.uploadImageView.getImageView());
         } else {
-            if (showCenter) {
-                ImageView imageView = holder.uploadImageView.getImageView();
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            } else {
-                holder.uploadImageView.getImageView().setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-            holder.uploadImageView.setImageResId(bean.resId);
+            holder.uploadImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            holder.uploadImageView.setImageResource(bean.resId);
         }
 
         if (mEnable && bean.status == UploadImageBean.UPLOAD_PREPARED) {
@@ -75,9 +62,9 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
         }
 
         if (!TextUtils.isEmpty(bean.fileUrl)) {
-            holder.uploadImageView.showVideoIndicator();
+            holder.uploadImageView.showPlayIndicator();
         } else {
-            holder.uploadImageView.hideVideoIndicator();
+            holder.uploadImageView.hidePlayIndicator();
         }
 
         if (!mEnable || bean.status == UploadImageBean.UPLOAD_PREPARED) {
@@ -85,47 +72,23 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
         } else {
             holder.deleteIv.setVisibility(View.VISIBLE);
         }
-        if (hideCameraIndicator) {
-            holder.uploadImageView.hideCameraIndicator();
-        }
     }
 
-    private int imgHeight;
-
-    public void setImgHeight(int imgHeight) {
-        this.imgHeight = imgHeight;
-    }
-
-    public void setItemHeight(UploadImageView mIv) {
-        int tempHeight = mHeight;
-        if (mColumnNum == 1 && imgHeight != 0) {
-            tempHeight = imgHeight;
-        } else {
-            try {
-                int imgId = getData().get(0).resId;
-                if (imgId != 0) {
-                    int imageHeight = getImageHeight(mContext, mColumnNum, imgId);
-                    if (imageHeight > 0) {
-                        tempHeight = imageHeight;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public void setItemHeight(View view) {
+        if (mHeight > 0) {
+            ImageView iv = view.findViewById(R.id.iv);
+            ViewGroup.LayoutParams layoutParams = iv.getLayoutParams();
+            layoutParams.height = mHeight;
+            iv.setLayoutParams(layoutParams);
         }
-        ViewGroup.LayoutParams layoutParams = mIv.getImageView().getLayoutParams();
-        layoutParams.height = tempHeight;
-        mIv.getImageView().setLayoutParams(layoutParams);
     }
 
     public void setFooterHeaderHeight(View view) {
-        if (view != null && mHeight > 0) {
-            UploadImageView uiv = (UploadImageView) view.findViewById(R.id.uiv);
-            if (uiv != null) {
-                ViewGroup.LayoutParams layoutParams = uiv.getLayoutParams();
-                layoutParams.height = mHeight;
-                uiv.setLayoutParams(layoutParams);
-            }
+        if (mHeight > 0) {
+            ImageView iv = view.findViewById(R.id.iv);
+            ViewGroup.LayoutParams layoutParams = iv.getLayoutParams();
+            layoutParams.height = mHeight;
+            iv.setLayoutParams(layoutParams);
         }
     }
 
@@ -141,17 +104,13 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
         setFooterHeaderHeight(header);
     }
 
-    public int getImageHeight(Context context, int colmNumber, int imgId) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(context.getResources(), imgId, options);
-        float imgWidth = options.outWidth;
-        float imgHeight = options.outHeight;
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float screenWidth = displayMetrics.widthPixels - Kit.dip2px(context, 30 + (colmNumber - 1) * 6);
-        float itemWidth = screenWidth / colmNumber;
-        float ratio = imgWidth / imgHeight;
-        return (int) (itemWidth / ratio);
+    public void setColumn(int column, float ratio) {
+        if (column > 0 && ratio > 0) {
+            DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+            int screenWidth = displayMetrics.widthPixels - Kit.dip2px(mContext, 5 * (column - 1) + 30);
+            int itemWidth = screenWidth / column;
+            mHeight = (int) (itemWidth / ratio);
+        }
     }
 
     @Override
@@ -187,10 +146,6 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
         }
     }
 
-    public void setClomNum(int clomnNum) {
-        this.mColumnNum = clomnNum;
-    }
-
     public void setEnable(boolean enable) {
         this.mEnable = enable;
         notifyDataSetChanged();
@@ -202,10 +157,6 @@ public class UploadImagesAreaAdapter extends HFRecyclerViewAdapter<UploadImageBe
 
     public void setOnDeleteIvClickListener(OnDeleteIvClickListener onDeleteIvClickListener) {
         mOnDeleteIvClickListener = onDeleteIvClickListener;
-    }
-
-    public void setUploadImagesHandler(IUploadImagesHandler uploadImagesHandler){
-
     }
 
 }

@@ -10,7 +10,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -147,10 +146,9 @@ public class ImageLoaderHelper {
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .resetViewBeforeLoading(true)
-//                .delayBeforeLoading(50)
-                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                .displayer(new FadeInBitmapDisplayer(500))
+                .resetViewBeforeLoading(false)
+                .displayer(new FadeInBitmapDisplayer(250))
+                .considerExifParams(true)
                 .build();
         return options;
     }
