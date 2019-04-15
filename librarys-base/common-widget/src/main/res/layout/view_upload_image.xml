@@ -20,9 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:background="#90cccccc"
+            android:background="#90000000"
             android:gravity="center"
-            android:padding="5dp"
+            android:textSize="12sp"
+            android:padding="2dp"
+            android:textColor="#ffffff"
             android:text="" />
 
         <ImageView

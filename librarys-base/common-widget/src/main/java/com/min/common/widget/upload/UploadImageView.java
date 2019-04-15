@@ -75,15 +75,15 @@ public class UploadImageView extends FrameLayout {
                 mStatusTv.setVisibility(INVISIBLE);
                 break;
             case UploadImageBean.UPLOAD_ING:
-                mStatusTv.setText("上传中...");
+                mStatusTv.setText("上传中");
                 mStatusTv.setVisibility(VISIBLE);
                 break;
             case UploadImageBean.UPLOAD_SUCCESS:
-                mStatusTv.setText("上传成功...");
+                mStatusTv.setText("上传成功");
                 mStatusTv.setVisibility(INVISIBLE);
                 break;
             case UploadImageBean.UPLOAD_FAIL:
-                mStatusTv.setText("上传失败...");
+                mStatusTv.setText("上传失败");
                 mStatusTv.setVisibility(VISIBLE);
                 break;
         }
