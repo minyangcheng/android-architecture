@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:id="@+id/logo_iv"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_logo" />
+
+        <com.min.common.widget.ClearableEditText
+            android:id="@+id/et_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:padding="8dp"
+            android:background="#ffffff"
+            android:drawableLeft="@mipmap/ic_user"
+            android:drawablePadding="8dp"
+            android:maxLines="1"
+            android:inputType="number"
+            android:digits="@string/letter_number"
+            android:imeOptions="actionNext"
+            android:textSize="16dp"
+            android:textColor="#666666"/>
+
+        <com.min.common.widget.ClearableEditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:padding="8dp"
+            android:background="#ffffff"
+            android:drawableLeft="@mipmap/ic_password"
+            android:drawablePadding="8dp"
+            android:maxLines="1"
+            android:inputType="numberPassword"
+            android:digits="@string/letter_number"
+            android:imeOptions="actionDone"
+            android:textSize="16dp"
+            android:textColor="#666666"/>
+
+        <Button
+            android:id="@+id/btn_submit"
+            style="@style/normalBtn"
+            android:layout_marginTop="30dp"
+            android:text="登录" />
+
+    </LinearLayout>
+
+</ScrollView>
+

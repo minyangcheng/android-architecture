@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">架构示例App</string>
+    <string name="app_name">正曜催收</string>
+    <string name="letter_number">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>

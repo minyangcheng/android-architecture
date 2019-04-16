@@ -1,49 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.min.sample">
+    package="com.za.cs">
 
     <application
-        android:name="com.min.sample.app.App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${APP_NAME}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".ui.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activity.MVPActivity"
+            android:name=".ui.main.MainActivity"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.activity.RefreshLoaderListActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.activity.TabViewPagerActivity"
-            android:screenOrientation="portrait" />
-
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="${BAIDU_KEY}" />
-
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" />
     </application>
 
 </manifest>

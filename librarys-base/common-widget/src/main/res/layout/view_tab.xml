@@ -6,14 +6,14 @@
     android:gravity="center">
     <ImageView
         android:id="@+id/iv_tab_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="25dp"
+        android:layout_height="25dp"/>
     <TextView
         android:id="@+id/tv_tab_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:singleLine="true"
         android:ellipsize="end"
-        android:textSize="10sp"/>
+        android:textSize="14sp"/>
 </LinearLayout>

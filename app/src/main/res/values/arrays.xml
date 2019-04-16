@@ -2,36 +2,18 @@
 <resources>
 
     <string-array name="tabTextArr">
-        <item>首页</item>
-        <item>车源</item>
-        <item>服务</item>
+        <item>工作台</item>
         <item>我</item>
     </string-array>
 
     <string-array name="tabUnSelectImageArr">
         <item>@mipmap/ic_tab_one_n</item>
         <item>@mipmap/ic_tab_two_n</item>
-        <item>@mipmap/ic_tab_three_n</item>
-        <item>@mipmap/ic_tab_four_n</item>
     </string-array>
 
     <string-array name="tabSelectImageArr">
         <item>@mipmap/ic_tab_one_f</item>
         <item>@mipmap/ic_tab_two_f</item>
-        <item>@mipmap/ic_tab_three_f</item>
-        <item>@mipmap/ic_tab_four_f</item>
     </string-array>
-
-    <string-array name="merchantAttributeStatusStr">
-        <item>市场商户</item>
-        <item>临街商户</item>
-        <item>办公楼内商户</item>
-    </string-array>
-
-    <integer-array name="merchantAttributeStatusInt">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </integer-array>
 
 </resources>
