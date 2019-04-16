@@ -1,6 +1,5 @@
 package com.min.common.widget.upload;
 
-import android.content.Context;
 import android.content.Intent;
 import android.widget.ImageView;
 

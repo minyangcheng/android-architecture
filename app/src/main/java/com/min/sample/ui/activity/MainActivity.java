@@ -2,6 +2,7 @@ package com.min.sample.ui.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import com.min.core.helper.image.EasyImageSelector;
 import com.min.core.view.CustomDatePickerDialog;
 import com.min.core.view.CustomTimePickerDialog;
 import com.min.core.view.ImagePreviewDialog;
+import com.min.core.view.choice.ChoiceDialog;
 import com.min.router.GlobalRouter;
 import com.min.sample.R;
 import com.min.sample.data.DataManager;
@@ -61,6 +63,8 @@ public class MainActivity extends BaseActivity {
             new MainItem("上传文件", "uploadFile"),
             new MainItem("选择时间", "selectTime"),
             new MainItem("选择日期", "selectDate"),
+            new MainItem("选择操作", "selectSingleItem"),
+            new MainItem("选择操作", "selectMultipleItem"),
     };
 
     @Override
@@ -205,24 +209,47 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void selectTime(){
-        CustomTimePickerDialog dialog =new CustomTimePickerDialog(this, 13, 11, new TimePicker.OnTimeChangedListener() {
+    private void selectTime() {
+        CustomTimePickerDialog dialog = new CustomTimePickerDialog(this, 13, 11, new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                LogUtils.d(hourOfDay,minute);
+                LogUtils.d(hourOfDay, minute);
             }
         });
         dialog.show();
     }
 
-    private void selectDate(){
-        CustomDatePickerDialog dialog = new CustomDatePickerDialog(this,2018,3,0, new DatePickerDialog.OnDateSetListener() {
+    private void selectDate() {
+        CustomDatePickerDialog dialog = new CustomDatePickerDialog(this, 2018, 3, 0, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                LogUtils.d(year,month,dayOfMonth);
+                LogUtils.d(year, month, dayOfMonth);
             }
         });
         dialog.show();
+    }
+
+    private void selectSingleItem() {
+        Resources resources = getResources();
+        List<ChoiceDialog.ChoiceBean> dataList = ChoiceDialog.getChoiceList(resources.getStringArray(R.array.merchantAttributeStatusStr), resources.getIntArray(R.array.merchantAttributeStatusInt));
+        ChoiceDialog.newInstanceForSingle("选择商户", dataList, new ChoiceDialog.OnSingleSelectResultListener() {
+            @Override
+            public void onResult(ChoiceDialog.ChoiceBean singleResult) {
+                ToastUtils.showShort(singleResult.statusStr);
+            }
+        }).show(getSupportFragmentManager(), ChoiceDialog.class.getName());
+    }
+
+    private void selectMultipleItem() {
+        Resources resources = getResources();
+        List<ChoiceDialog.ChoiceBean> dataList = ChoiceDialog.getChoiceList(resources.getStringArray(R.array.merchantAttributeStatusStr), resources.getIntArray(R.array.merchantAttributeStatusInt));
+        ChoiceDialog.newInstanceForMultiple("选择商户", dataList, new ChoiceDialog.OnMultipleSelectResultListener() {
+
+            @Override
+            public void onResult(List<ChoiceDialog.ChoiceBean> multipleResult) {
+                ToastUtils.showShort(GsonUtils.toJson(multipleResult));
+            }
+        }).show(getSupportFragmentManager(), ChoiceDialog.class.getName());
     }
 
 }

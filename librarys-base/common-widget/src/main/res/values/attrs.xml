@@ -20,6 +20,8 @@
         <attr name="imageLoader" format="string|reference" />
         <attr name="mainTitle" format="string|reference" />
         <attr name="showBack" format="boolean|reference" />
+        <attr name="rightText" format="string|reference" />
+        <attr name="rightDrawable" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="TabIndicator">
@@ -60,7 +62,7 @@
         <attr name="headContent" format="string|reference" />
         <attr name="handler" format="string" />
         <attr name="namespace" format="string" />
-        <attr name="toastHint" format="string"/>
+        <attr name="toastHint" format="string" />
     </declare-styleable>
 
     <declare-styleable name="CellView">

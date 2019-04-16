@@ -3,6 +3,7 @@ package com.min.common.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -33,6 +34,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
     private TitleBarImageLoader mImageLoader;
     private String mTitle;
     private boolean mShowBack;
+    private String mRightText;
+    private Drawable mRightImgDrawable;
 
     public TitleBar(@NonNull Context context) {
         this(context, null);
@@ -48,6 +51,8 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
         try {
             mTitle = typedArray.getString(R.styleable.TitleBar_mainTitle);
             mShowBack = typedArray.getBoolean(R.styleable.TitleBar_showBack, true);
+            mRightText = typedArray.getString(R.styleable.TitleBar_rightText);
+            mRightImgDrawable = typedArray.getDrawable(R.styleable.TitleBar_rightDrawable);
             String imageLoaderClassName = typedArray.getString(R.styleable.TitleBar_imageLoader);
             if (!TextUtils.isEmpty(imageLoaderClassName)) {
                 mImageLoader = (TitleBarImageLoader) Class.forName(imageLoaderClassName).newInstance();
@@ -65,6 +70,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
         findView();
         setTitle(mTitle);
         setBackVisibility(mShowBack);
+        setRightBtn(mRightImgDrawable, mRightText);
     }
 
     private void findView() {
@@ -101,6 +107,30 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
         mCloseIv.setVisibility(visible ? VISIBLE : GONE);
     }
 
+    public void setRightBtn(Drawable drawable, String text) {
+        if (drawable != null) {
+            mRightTvs[0].setVisibility(View.GONE);
+            mRightIvs[0].setVisibility(View.VISIBLE);
+            mRightIvs[0].setImageDrawable(drawable);
+        } else if (!TextUtils.isEmpty(text)) {
+            mRightTvs[0].setVisibility(View.VISIBLE);
+            mRightIvs[0].setVisibility(View.GONE);
+            mRightTvs[0].setText(text);
+        }
+    }
+
+    public void setRightBtn(int resId) {
+        mRightTvs[0].setVisibility(View.GONE);
+        mRightIvs[0].setVisibility(View.VISIBLE);
+        mRightIvs[0].setImageDrawable(getContext().getResources().getDrawable(resId));
+    }
+
+    public void setRightBtn(String text) {
+        mRightTvs[0].setVisibility(View.VISIBLE);
+        mRightIvs[0].setVisibility(View.GONE);
+        mRightTvs[0].setText(text);
+    }
+
     public void setLeftBtn(String imageUrl, String text) {
         if (!TextUtils.isEmpty(imageUrl)) {
             mLeftTv.setVisibility(View.GONE);
@@ -108,7 +138,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
             if (mImageLoader != null) {
                 mImageLoader.loadImage(mLeftIv, imageUrl);
             }
-        } else {
+        } else if(!TextUtils.isEmpty(text)) {
             mLeftIv.setVisibility(View.GONE);
             mLeftTv.setVisibility(View.VISIBLE);
             mLeftTv.setText(text);
@@ -127,7 +157,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener {
             if (mImageLoader != null) {
                 mImageLoader.loadImage(mRightIvs[which], imageUrl);
             }
-        } else {
+        } else if(!TextUtils.isEmpty(text)) {
             mRightIvs[which].setVisibility(View.GONE);
             mRightTvs[which].setVisibility(View.VISIBLE);
             mRightTvs[which].setText(text);
