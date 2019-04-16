@@ -63,8 +63,8 @@ public class MainActivity extends BaseActivity {
             new MainItem("上传文件", "uploadFile"),
             new MainItem("选择时间", "selectTime"),
             new MainItem("选择日期", "selectDate"),
-            new MainItem("选择操作", "selectSingleItem"),
-            new MainItem("选择操作", "selectMultipleItem"),
+            new MainItem("单项选择操作", "selectSingleItem"),
+            new MainItem("多项选择操作", "selectMultipleItem"),
     };
 
     @Override
