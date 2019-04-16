@@ -6,8 +6,11 @@ import android.view.KeyEvent;
 import android.widget.Button;
 
 import com.min.common.util.AppUtils;
+import com.min.common.util.GsonUtils;
+import com.min.common.util.LogUtils;
 import com.min.common.util.ServiceUtils;
 import com.min.common.util.ToastUtils;
+import com.min.core.CoreConstants;
 import com.min.core.base.BaseActivity;
 import com.min.core.helper.RxHelper;
 import com.trello.rxlifecycle.android.ActivityEvent;
@@ -17,6 +20,7 @@ import com.za.cs.data.model.UpdateBean;
 import com.za.cs.service.UpdateService;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -60,12 +64,14 @@ public class UpdateManager {
                 .subscribe(new Action1<UpdateBean>() {
                     @Override
                     public void call(UpdateBean updateResponse) {
+                        LogUtils.dTag(CoreConstants.HTTP_LOG, GsonUtils.toJson(updateResponse));
                         mUpdateResponse = updateResponse;
                         handleUpdateBean(isShowHUD);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        LogUtils.eTag(CoreConstants.HTTP_LOG, throwable);
                         if (isShowHUD) {
                             RxHelper.handlerError(throwable);
                         }
@@ -103,10 +109,8 @@ public class UpdateManager {
                         hackAlertDialog(dialog, false); //使之不能关闭(此为机关所在，其它语句相同)
                         AlertDialog alertDialog = (AlertDialog) dialog;
                         Button btn = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                        btn.setText("正在更新中...");
-                        UpdateService.startService(mActivity
-                                , true, mUpdateResponse.installUrl
-                                , mUpdateResponse.md5);
+                        btn.setText("请稍等，正在更新中...");
+                        UpdateService.startService(mActivity, true, mUpdateResponse.installUrl, mUpdateResponse.md5);
                     }
                 })
                 .setOnKeyListener(new DialogInterface.OnKeyListener() {

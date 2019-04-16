@@ -22,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 /**
  * Created by minych on 2019/4/16 14:29
@@ -48,33 +51,54 @@ public class MineFragment extends BaseFragment {
         mRealNameCv.setValue(userInfo.realName);
         mUserNameCv.setValue(userInfo.userName);
 
-        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
-            String sizeStr = FileUtils.getDirSize(PathUtils.getExternalAppCachePath());
-            subscriber.onNext(sizeStr);
-            subscriber.onCompleted();
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                String sizeStr = FileUtils.getDirSize(PathUtils.getExternalAppCachePath());
+                subscriber.onNext(sizeStr);
+                subscriber.onCompleted();
+            }
         }).compose(bindUntilEvent(FragmentEvent.DESTROY))
                 .compose(RxHelper.io_main())
-                .subscribe(s -> {
-                    mCleanCacheCv.setValue(s);
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        mCleanCacheCv.setValue(s);
+                    }
                 });
 
-        mUpdateCv.setValue("v" + AppUtils.getAppVersionName());
+        mUpdateCv.setValue("V" + AppUtils.getAppVersionName());
     }
 
     @OnClick(R.id.cv_clean_cache)
     void cleanCache() {
-        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
-            CleanUtils.cleanExternalCache();
-            subscriber.onNext("0.00KB");
-            subscriber.onCompleted();
-
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                CleanUtils.cleanExternalCache();
+                subscriber.onNext("0.00KB");
+                subscriber.onCompleted();
+            }
         }).delay(1000, TimeUnit.MILLISECONDS)
                 .compose(bindUntilEvent(FragmentEvent.DESTROY))
                 .compose(RxHelper.io_main())
-                .doOnSubscribe(() -> showHudDialog())
-                .doOnTerminate(() -> hideHudDialog())
-                .subscribe(s -> {
-                    mCleanCacheCv.setValue(s);
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        showHudDialog();
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        hideHudDialog();
+                    }
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        mCleanCacheCv.setValue(s);
+                    }
                 });
     }
 
