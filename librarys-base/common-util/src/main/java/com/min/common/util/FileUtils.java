@@ -1214,14 +1214,12 @@ public final class FileUtils {
     private static String byte2FitMemorySize(final long byteNum) {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";
-        } else if (byteNum < 1024) {
-            return String.format(Locale.getDefault(), "%.3fB", (double) byteNum);
         } else if (byteNum < 1048576) {
-            return String.format(Locale.getDefault(), "%.3fKB", (double) byteNum / 1024);
+            return String.format(Locale.getDefault(), "%.2fKB", (double) byteNum / 1024);
         } else if (byteNum < 1073741824) {
-            return String.format(Locale.getDefault(), "%.3fMB", (double) byteNum / 1048576);
+            return String.format(Locale.getDefault(), "%.2fMB", (double) byteNum / 1048576);
         } else {
-            return String.format(Locale.getDefault(), "%.3fGB", (double) byteNum / 1073741824);
+            return String.format(Locale.getDefault(), "%.2fGB", (double) byteNum / 1073741824);
         }
     }
 

@@ -3,24 +3,28 @@ package com.za.cs.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.min.common.util.LogUtils;
 import com.min.common.util.StringUtils;
 import com.min.common.util.ToastUtils;
 import com.min.core.base.BaseActivity;
 import com.za.cs.R;
+import com.za.cs.data.DataManager;
+import com.za.cs.data.model.UserInfo;
 import com.za.cs.ui.main.MainActivity;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+import butterknife.BindView;
+import butterknife.OnClick;
 
-    private EditText mUserNameEt;
-    private EditText mPasswordEt;
-    private Button mSubmitBtn;
+public class LoginActivity extends BaseActivity {
+
+    @BindView(R.id.et_user_name)
+    EditText mUserNameEt;
+    @BindView(R.id.et_password)
+    EditText mPasswordEt;
 
     private String mUserName;
     private String mPassword;
@@ -28,7 +32,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        findViews();
         initViews();
     }
 
@@ -43,13 +46,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 return false;
             }
         });
-        mSubmitBtn.setOnClickListener(this);
-    }
-
-    private void findViews() {
-        mUserNameEt = findViewById(R.id.et_user_name);
-        mPasswordEt = findViewById(R.id.et_password);
-        mSubmitBtn = findViewById(R.id.btn_submit);
     }
 
     @Override
@@ -57,16 +53,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         return R.layout.activity_login;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_submit) {
-            submit();
-        }
-    }
-
-    private void submit() {
+    @OnClick(R.id.btn_submit)
+    void submit() {
         fillData();
         if (check()) {
+            UserInfo userInfo = new UserInfo();
+            userInfo.userName = mUserName;
+            userInfo.password = mPassword;
+            userInfo.realName = "唐三";
+
+            DataManager.getPreferencesHelper().setHasLogin(true);
+            DataManager.getPreferencesHelper().setUserInfo(userInfo);
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

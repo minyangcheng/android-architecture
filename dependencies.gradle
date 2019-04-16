@@ -31,7 +31,7 @@ project.ext {
             "support-annotations"   : "com.android.support:support-annotations:${supportVersion}",
 
             "flexbox"               : "com.google.android:flexbox:0.3.0",
-            "multidex"              : "com.android.support:multidex:1.0.0",
+            "multidex"              : "com.android.support:multidex:1.0.1",
 
             "butterknife"           : "com.jakewharton:butterknife:8.5.1",
             "butterknife-compiler"  : "com.jakewharton:butterknife-compiler:8.5.1",

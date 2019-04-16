@@ -31,7 +31,8 @@
         android:textColor="#666666"
         android:textColorHint="#999999"
         android:textSize="14sp"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:gravity="right"/>
 
     <TextView
         android:id="@+id/tv_value"
@@ -42,7 +43,8 @@
         android:textColor="#666666"
         android:textSize="14sp"
         android:maxLines="2"
-        android:ellipsize="end"/>
+        android:ellipsize="end"
+        android:gravity="right"/>
 
     <TextView
         android:id="@+id/tv_unit"

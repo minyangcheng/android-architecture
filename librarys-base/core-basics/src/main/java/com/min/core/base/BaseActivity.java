@@ -4,8 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.min.common.widget.HudDialog;
-import com.min.core.helper.inject.ViewInject;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by minyangcheng on 2016/9/27.
@@ -19,7 +20,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         if (getLayoutId() > 0) {
             setContentView(getLayoutId());
-            ViewInject.inject(this);
+            ButterKnife.bind(this);
         }
     }
 

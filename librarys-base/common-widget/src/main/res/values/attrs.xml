@@ -74,6 +74,7 @@
         <attr name="input_type" format="integer" />
         <attr name="max_length" format="integer" />
         <attr name="decimal_length" format="integer" />
+        <attr name="show_arrow" format="boolean" />
     </declare-styleable>
 
 </resources>

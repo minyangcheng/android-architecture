@@ -44,7 +44,7 @@ public class RxRefreshLoader<DATA> extends RefreshLoaderDelegate<DATA> {
     protected void loadData(final boolean isRefresh, int page) {
         Subscription subscription = Observable.just(page)
                 .flatMap(mFun1)
-                .compose(RxHttpResponseHelper.<List<DATA>>handleServerResult())
+                .compose(RxHelper.<List<DATA>>handleServerResult())
                 .subscribe(new Action1<List<DATA>>() {
                     @Override
                     public void call(List<DATA> dataList) {

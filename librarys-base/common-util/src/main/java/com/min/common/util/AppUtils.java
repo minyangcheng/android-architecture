@@ -16,12 +16,17 @@ import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -37,8 +42,36 @@ import java.util.List;
  */
 public final class AppUtils {
 
+    private static Handler handler = new Handler(Looper.getMainLooper());
+
     private AppUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    public static Handler getHandler() {
+        return handler;
+    }
+
+    /**
+     * Android P 后谷歌限制了开发者调用非官方公开API 方法或接口，也就是说，你用反射直接调用源码就会有这样的提示弹窗出现
+     */
+    public static void hackAndroidPDialog() {
+        if (Build.VERSION.SDK_INT >= 28) {
+            try {
+                Class aClass = Class.forName("android.content.pm.PackageParser$Package");
+                Constructor declaredConstructor = aClass.getDeclaredConstructor(String.class);
+                declaredConstructor.setAccessible(true);
+                Class cls = Class.forName("android.app.ActivityThread");
+                Method declaredMethod = cls.getDeclaredMethod("currentActivityThread");
+                declaredMethod.setAccessible(true);
+                Object activityThread = declaredMethod.invoke(null);
+                Field mHiddenApiWarningShown = cls.getDeclaredField("mHiddenApiWarningShown");
+                mHiddenApiWarningShown.setAccessible(true);
+                mHiddenApiWarningShown.setBoolean(activityThread, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

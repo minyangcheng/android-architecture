@@ -17,7 +17,7 @@ public class ImageHelper {
 
     private static String GENERATE_IMAGE_DIR = "images";
 
-    private static final int MAX_IMAGE_FILE_COUNT = 5;
+    private static final int MAX_IMAGE_FILE_COUNT = 100;
 
     public static File compressImageToFile(File sourceFile) {
         return compressImageToFile(sourceFile, 720, 1280, 800);

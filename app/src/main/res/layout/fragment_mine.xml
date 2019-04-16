@@ -1,7 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</FrameLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="14sp"
+        android:background="#ffffff"
+        android:text="我的"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:divider="@drawable/divider"
+        android:orientation="vertical"
+        android:showDividers="beginning|middle|end">
+
+        <com.min.common.widget.CellView
+            android:id="@+id/cv_real_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:edit_mode="false"
+            app:label="姓名"
+            app:show_arrow="false"/>
+
+        <com.min.common.widget.CellView
+            android:id="@+id/cv_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:edit_mode="false"
+            app:label="账号"
+            app:show_arrow="false"/>
+
+        <com.min.common.widget.CellView
+            android:id="@+id/cv_clean_cache"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:edit_mode="false"
+            app:label="缓存清理"
+            app:value="0.0KB"
+            app:show_arrow="false"/>
+
+        <com.min.common.widget.CellView
+            android:id="@+id/cv_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:edit_mode="false"
+            app:label="版本更新"/>
+
+    </LinearLayout>
+    
+    <Button
+        style="@style/normalBtn"
+        android:layout_marginTop="50dp"
+        android:text="安全退出"/>
+
+</LinearLayout>

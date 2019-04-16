@@ -29,6 +29,7 @@ public class CellView extends FrameLayout {
     private int inputType;
     private int maxLength;
     private int decimalLength;
+    private boolean showArrow;
 
     public CellView(Context context) {
         this(context, null);
@@ -71,7 +72,7 @@ public class CellView extends FrameLayout {
             //选择模式
             valueEt.setVisibility(GONE);
             valueTv.setVisibility(VISIBLE);
-            arrowIv.setVisibility(VISIBLE);
+            arrowIv.setVisibility(showArrow?VISIBLE: GONE);
             if (!TextUtils.isEmpty(value)) {
                 valueTv.setText(value);
             }
@@ -104,6 +105,7 @@ public class CellView extends FrameLayout {
         inputType = typedArray.getInt(R.styleable.CellView_input_type, 0);
         maxLength = typedArray.getInt(R.styleable.CellView_max_length, 0);
         decimalLength = typedArray.getInt(R.styleable.CellView_decimal_length, 2);
+        showArrow = typedArray.getBoolean(R.styleable.CellView_show_arrow, true);
         typedArray.recycle();
     }
 

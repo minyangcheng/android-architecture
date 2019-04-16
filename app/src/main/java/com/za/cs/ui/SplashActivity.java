@@ -8,6 +8,7 @@ import com.min.core.base.BaseActivity;
 import com.min.core.helper.PermissionHelper;
 import com.za.cs.R;
 import com.za.cs.data.DataManager;
+import com.za.cs.ui.main.MainActivity;
 
 /**
  * Created by minyangcheng on 2019/4/16
@@ -56,7 +57,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void toMain() {
-        Intent intent = new Intent(getContext(), LoginActivity.class);
+        Intent intent = new Intent(getContext(), MainActivity.class);
         startActivity(intent);
         finish();
     }

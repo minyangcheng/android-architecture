@@ -16,7 +16,7 @@ public class PreferencesHelper {
         spUtils = SPUtils.getInstance(AppUtils.getAppPackageName());
     }
 
-    public void putUserInfo(UserInfo userInfo) {
+    public void setUserInfo(UserInfo userInfo) {
         spUtils.put(AppConstants.KEY_USER_INFO, GsonUtils.toJson(userInfo));
     }
 

@@ -12,17 +12,20 @@ import com.za.cs.helper.MyFragmentPageAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 public class MainActivity extends BaseActivity {
 
-    private ViewPager mVp;
-    private TabViewPagerIndicator mTabIndicator;
+    @BindView(R.id.vp)
+    ViewPager mVp;
+    @BindView(R.id.ti_indicator)
+    TabViewPagerIndicator mTabIndicator;
 
     private List<Fragment> mFragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        findViews();
         initData();
 
         mVp.setAdapter(new MyFragmentPageAdapter(getSupportFragmentManager(), mFragmentList));
@@ -34,11 +37,6 @@ public class MainActivity extends BaseActivity {
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new WorkStationFragment());
         mFragmentList.add(new MineFragment());
-    }
-
-    private void findViews() {
-        mVp = findViewById(R.id.vp);
-        mTabIndicator = findViewById(R.id.ti_indicator);
     }
 
     @Override

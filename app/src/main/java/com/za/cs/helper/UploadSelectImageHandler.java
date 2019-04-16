@@ -1,28 +1,12 @@
 package com.za.cs.helper;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.widget.ImageView;
 
-import com.min.common.util.LogUtils;
-import com.min.common.util.ToastUtils;
 import com.min.common.widget.upload.AbstractUploadImagesHandler;
-import com.min.common.widget.upload.UploadImageBean;
 import com.min.common.widget.upload.UploadImagesAreaView;
-import com.min.core.helper.ImageLoaderHelper;
-import com.min.core.helper.MultipartHelper;
-import com.min.core.helper.RxHttpResponseHelper;
-import com.min.core.helper.image.EasyImageSelector;
-import com.min.core.view.ImagePreviewDialog;
-import com.za.cs.data.DataManager;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.Subscription;
 
 /**
  * Created by minych on 2019/4/15 10:20
@@ -104,7 +88,7 @@ public class UploadSelectImageHandler extends AbstractUploadImagesHandler {
 //    public void uploadFile(File uploadFile, int pos) {
 //        subscription = DataManager.getMobileService()
 //                .uploadFile(MultipartHelper.imageMultiPart("file", uploadFile))
-//                .compose(RxHttpResponseHelper.io_main())
+//                .compose(RxHelper.io_main())
 //                .subscribe(data -> {
 //                            LogUtils.d(data);
 //                            uploadImagesAreaView.updateStatusInPos_success(pos, data.getUrl());

@@ -14,7 +14,7 @@ public class DataManager {
 
     public static MobileService getMobileService() {
         if (mobileService == null) {
-//            mobileService = MobileService.Creator.newMobileService();
+            mobileService = MobileService.Creator.newMobileService();
         }
         return mobileService;
     }

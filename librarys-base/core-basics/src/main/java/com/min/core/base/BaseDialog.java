@@ -7,7 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.min.core.R;
-import com.min.core.helper.inject.ViewInject;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by minyangcheng on 2017/9/18.
@@ -32,7 +33,7 @@ public abstract class BaseDialog extends Dialog {
             mRootView = LayoutInflater.from(getContext()).inflate(getLayoutId(), null);
             onViewCreate(mRootView);
             setContentView(mRootView);
-            ViewInject.inject(this);
+            ButterKnife.bind(this);
         }
     }
 

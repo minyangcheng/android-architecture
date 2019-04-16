@@ -11,7 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.min.core.helper.inject.ViewInject;
+import butterknife.ButterKnife;
 
 /**
  * popupwindow的根布局上的layout_width和layout_height都无效，最终大小需要通过构造函数
@@ -72,7 +72,7 @@ public abstract class BasePopupWindow extends PopupWindow {
         View view = null;
         if (getLayoutId() > 0) {
             view = LayoutInflater.from(mContext).inflate(getLayoutId(), null);
-            ViewInject.inject(this, view);
+            ButterKnife.bind(this, view);
             super.setOnDismissListener(new OnDismissListener() {
                 @Override
                 public void onDismiss() {

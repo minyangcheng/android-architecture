@@ -15,7 +15,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RxHttpResponseHelper {
+public class RxHelper {
 
     public static <T> Observable.Transformer<BaseBean<T>, T> handleServerResult() {
         return handleServerResult(true);

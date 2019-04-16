@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.min.common.widget.recyclerview.HFRecyclerViewAdapter;
 import com.min.core.R;
-import com.min.core.helper.inject.ViewInject;
-import com.min.core.helper.inject.annotation.BindView;
 
 public class ChoiceAdapter extends HFRecyclerViewAdapter<ChoiceDialog.ChoiceBean, ChoiceAdapter.ItemViewHolder> {
 
@@ -63,16 +61,12 @@ public class ChoiceAdapter extends HFRecyclerViewAdapter<ChoiceDialog.ChoiceBean
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-//        @BindView(R.id.tv_status_name)
         public TextView statusNameTv;
-//        @BindView(R.id.tv_status_right)
         public TextView statusRightTv;
-//        @BindView(R.id.iv_select)
         public ImageView selectIv;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-//            ViewInject.inject(this, itemView);
             statusNameTv = itemView.findViewById(R.id.tv_status_name);
             statusRightTv = itemView.findViewById(R.id.tv_status_right);
             selectIv = itemView.findViewById(R.id.iv_select);

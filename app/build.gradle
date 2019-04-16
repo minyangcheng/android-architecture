@@ -39,6 +39,9 @@ android {
         buildConfigField 'String', 'APP_SECRET', '"be7175c2ef4dcf9c06e3471a5e5633"'
 
         buildConfigField 'String', 'BUGLY_APPID', '"123"'
+
+        buildConfigField "String", "APP_SELF_UPDATE_URL", "\"http://api.fir.im/apps/latest/59488157ca87a818b2000190?api_token=f336262eba75d4d783407cdd7500075e\""
+
         buildConfigField 'String', 'GIT_VERSION', "\"${getGitVersion()}\""
         manifestPlaceholders = ['BAIDU_KEY': '123',
                                 'APP_NAME' : '@string/app_name']
@@ -123,7 +126,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile(rootProject.ext.dependencies["espresso-core"], {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -136,12 +138,10 @@ dependencies {
     compile project(':librarys-base:core-basics')
 
     compile project(':librarys-base:sdk-location')
-    compile project(':librarys-base:h5-container')
-    compile project(':librarys-base:weex-container')
     compile project(':librarys-base:router')
-    if (!isBuildModule.toBoolean()) {
-        compile project(':librarys-business:order')
-    }
+
+    compile rootProject.ext.dependencies["butterknife"]
+    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
 }
 
 def getGitVersion() {
