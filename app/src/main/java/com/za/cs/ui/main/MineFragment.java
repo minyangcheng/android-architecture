@@ -1,5 +1,6 @@
 package com.za.cs.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,12 +11,15 @@ import com.min.common.util.PathUtils;
 import com.min.common.widget.CellView;
 import com.min.core.base.BaseActivity;
 import com.min.core.base.BaseFragment;
+import com.min.core.helper.CSRxHelper;
 import com.min.core.helper.RxHelper;
 import com.trello.rxlifecycle.android.FragmentEvent;
 import com.za.cs.R;
 import com.za.cs.data.DataManager;
 import com.za.cs.data.model.UserInfo;
+import com.za.cs.helper.LoginHelper;
 import com.za.cs.helper.UpdateManager;
+import com.za.cs.ui.LoginActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -48,8 +52,8 @@ public class MineFragment extends BaseFragment {
 
     private void setDataToViews() {
         UserInfo userInfo = DataManager.getPreferencesHelper().getUserInfo();
-        mRealNameCv.setValue(userInfo.realName);
-        mUserNameCv.setValue(userInfo.userName);
+        mRealNameCv.setValue(userInfo.name);
+        mUserNameCv.setValue(userInfo.id);
 
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -105,6 +109,44 @@ public class MineFragment extends BaseFragment {
     @OnClick(R.id.cv_update)
     void checkUpdate() {
         new UpdateManager((BaseActivity) getActivity()).checkUpdate(true);
+    }
+
+    @OnClick(R.id.btn_logout)
+    void logout() {
+        DataManager.getMobileService()
+                .logout()
+                .compose(bindUntilEvent(FragmentEvent.DESTROY))
+                .compose(CSRxHelper.handleServerResult())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        showHudDialog();
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        hideHudDialog();
+                    }
+                })
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object object) {
+                        handleLogoutSuccess();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        CSRxHelper.handlerError(throwable);
+                    }
+                });
+    }
+
+    private void handleLogoutSuccess() {
+        LoginHelper.logout();
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     @Override

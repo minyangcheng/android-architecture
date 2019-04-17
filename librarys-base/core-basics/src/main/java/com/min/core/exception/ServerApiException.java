@@ -7,26 +7,20 @@ import com.min.core.bean.BaseBean;
  */
 public class ServerApiException extends RuntimeException{
 
-    private int code;
+    private String code;
     private String message;
 
-    public ServerApiException(BaseBean bean) {
-        super(bean.message);
-        this.code=bean.code;
-        this.message=bean.message;
-    }
-
-    public ServerApiException(int code,String message) {
+    public ServerApiException(String code,String message) {
         super(message);
         this.code=code;
         this.message=message;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -38,4 +32,5 @@ public class ServerApiException extends RuntimeException{
     public void setMessage(String message) {
         this.message = message;
     }
+
 }

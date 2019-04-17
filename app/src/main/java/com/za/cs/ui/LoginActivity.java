@@ -4,20 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.min.common.util.StringUtils;
 import com.min.common.util.ToastUtils;
 import com.min.core.base.BaseActivity;
+import com.min.core.helper.CSRxHelper;
+import com.trello.rxlifecycle.android.ActivityEvent;
 import com.za.cs.R;
 import com.za.cs.data.DataManager;
 import com.za.cs.data.model.UserInfo;
+import com.za.cs.helper.LoginHelper;
 import com.za.cs.ui.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 public class LoginActivity extends BaseActivity {
 
@@ -36,6 +40,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initViews() {
+        mUserNameEt.setText(DataManager.getPreferencesHelper().getUserName());
+        mPasswordEt.setText(DataManager.getPreferencesHelper().getPassword());
         mPasswordEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -57,18 +63,42 @@ public class LoginActivity extends BaseActivity {
     void submit() {
         fillData();
         if (check()) {
-            UserInfo userInfo = new UserInfo();
-            userInfo.userName = mUserName;
-            userInfo.password = mPassword;
-            userInfo.realName = "唐三";
-
-            DataManager.getPreferencesHelper().setHasLogin(true);
-            DataManager.getPreferencesHelper().setUserInfo(userInfo);
-
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            DataManager.getMobileService()
+                    .login(mUserName, mPassword)
+                    .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                    .compose(CSRxHelper.handleServerResult())
+                    .doOnSubscribe(new Action0() {
+                        @Override
+                        public void call() {
+                            showHudDialog();
+                        }
+                    })
+                    .doOnTerminate(new Action0() {
+                        @Override
+                        public void call() {
+                            hideHudDialog();
+                        }
+                    })
+                    .subscribe(new Action1<UserInfo>() {
+                        @Override
+                        public void call(UserInfo userInfo) {
+                            handleLoginSuccess(userInfo);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            CSRxHelper.handlerError(throwable);
+                        }
+                    });
         }
+    }
+
+    private void handleLoginSuccess(UserInfo userInfo) {
+        LoginHelper.login(mUserName, mPassword, userInfo);
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private boolean check() {

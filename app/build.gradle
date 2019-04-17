@@ -30,7 +30,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField 'String', 'API_SERVER_URL', '"https://api.cheguo.com"'
+        buildConfigField 'String', 'API_SERVER_URL', '"https://api.za.com"'
         buildConfigField "String", "APP_SELF_UPDATE_URL", "\"http://api.fir.im/apps/latest/59488157ca87a818b2000190?api_token=f336262eba75d4d783407cdd7500075e\""
         buildConfigField 'String', 'GIT_VERSION', "\"${getGitVersion()}\""
 
@@ -59,10 +59,18 @@ android {
     }
 
     productFlavors {
-        beta_in {}
-        beta_out {}
-        beta_preview {}
-        offical {}
+        beta_in {
+            buildConfigField 'String', 'API_SERVER_URL', '"http://192.168.27.227:8080"'
+        }
+        beta_out {
+            buildConfigField 'String', 'API_SERVER_URL', '"https://api.za.com"'
+        }
+        beta_preview {
+            buildConfigField 'String', 'API_SERVER_URL', '"https://api.za.com"'
+        }
+        offical {
+            buildConfigField 'String', 'API_SERVER_URL', '"https://api.za.com"'
+        }
     }
 
     productFlavors.all { flavor ->

@@ -724,6 +724,6 @@ public final class SPStaticUtils {
     }
 
     private static SPUtils getDefaultSPUtils() {
-        return sDefaultSPUtils != null ? sDefaultSPUtils : SPUtils.getInstance();
+        return sDefaultSPUtils != null ? sDefaultSPUtils : SPUtils.getInstance(AppUtils.getAppPackageName());
     }
 }

@@ -421,7 +421,7 @@ public final class LogUtils {
                                               final String[] head,
                                               final String msg) {
         StringBuilder sb = new StringBuilder();
-        sb.append(PLACEHOLDER).append(LINE_SEP);
+//        sb.append(PLACEHOLDER).append(LINE_SEP);
         if (CONFIG.isLogBorderSwitch()) {
             sb.append(TOP_BORDER).append(LINE_SEP);
             if (head != null) {

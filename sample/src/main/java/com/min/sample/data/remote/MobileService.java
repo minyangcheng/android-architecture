@@ -41,7 +41,7 @@ public interface MobileService {
         public static MobileService newMobileService() {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BuildConfig.API_SERVER_URL)
-                    .client(SingleHttpClient.getHttpClient())
+                    .client(SingleHttpClient.getHttpClient(new CGApiInterceptor()))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

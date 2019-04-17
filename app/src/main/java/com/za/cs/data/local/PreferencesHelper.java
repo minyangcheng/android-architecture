@@ -2,26 +2,49 @@ package com.za.cs.data.local;
 
 import android.text.TextUtils;
 
-import com.min.common.util.AppUtils;
 import com.min.common.util.GsonUtils;
-import com.min.common.util.SPUtils;
-import com.za.cs.app.AppConstants;
+import com.min.common.util.SPStaticUtils;
 import com.za.cs.data.model.UserInfo;
 
 public class PreferencesHelper {
 
-    private SPUtils spUtils;
+    private static final String KEY_USER_NAME = "userName";
+    private static final String KEY_PASSWORD = "password";
+
+    private static final String KEY_HAS_LOGIN = "hasLogin";
+    private static final String KEY_USER_INFO = "userInfo";
+    private static final String KEY_AUTH_ID = "authId";
+    private static final String KEY_EXPIRE_DATE = "expireDate";
 
     public PreferencesHelper() {
-        spUtils = SPUtils.getInstance(AppUtils.getAppPackageName());
+    }
+
+    public void setUserName(String userName) {
+        SPStaticUtils.put(KEY_USER_NAME, userName);
+    }
+
+    public String getUserName() {
+        return SPStaticUtils.getString(KEY_USER_NAME);
+    }
+
+    public void setPassword(String password) {
+        SPStaticUtils.put(KEY_PASSWORD, password);
+    }
+
+    public String getPassword() {
+        return SPStaticUtils.getString(KEY_PASSWORD);
     }
 
     public void setUserInfo(UserInfo userInfo) {
-        spUtils.put(AppConstants.KEY_USER_INFO, GsonUtils.toJson(userInfo));
+        if (userInfo == null) {
+            SPStaticUtils.put(KEY_USER_INFO, "");
+        } else {
+            SPStaticUtils.put(KEY_USER_INFO, GsonUtils.toJson(userInfo));
+        }
     }
 
     public UserInfo getUserInfo() {
-        String json = spUtils.getString(AppConstants.KEY_USER_INFO);
+        String json = SPStaticUtils.getString(KEY_USER_INFO);
         if (TextUtils.isEmpty(json)) {
             return null;
         } else {
@@ -30,11 +53,23 @@ public class PreferencesHelper {
     }
 
     public void setHasLogin(boolean flag) {
-        spUtils.put(AppConstants.KEY_HAS_LOGIN, flag);
+        SPStaticUtils.put(KEY_HAS_LOGIN, flag);
     }
 
     public boolean getHasLogin() {
-        return spUtils.getBoolean(AppConstants.KEY_HAS_LOGIN, false);
+        return SPStaticUtils.getBoolean(KEY_HAS_LOGIN, false);
+    }
+
+    public void setAuthId(String authId) {
+        SPStaticUtils.put(KEY_AUTH_ID, authId);
+    }
+
+    public void setExpireDate(long expireDate) {
+        SPStaticUtils.put(KEY_EXPIRE_DATE, expireDate);
+    }
+
+    public long getExpireDate() {
+        return SPStaticUtils.getLong(KEY_EXPIRE_DATE, -1);
     }
 
 }

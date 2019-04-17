@@ -5,8 +5,15 @@ package com.za.cs.data.model;
  */
 public class UserInfo {
 
-    public String userName;
-    public String password;
-    public String realName;
+    public String id;
+    public String code;
+    public String rootOrgId;
+    public String orgId;
+    public String name;
+    public String remark;
+    public String mail;
+    public String phone;
+    public AuthRole authRole;
+    public Token token;
 
 }

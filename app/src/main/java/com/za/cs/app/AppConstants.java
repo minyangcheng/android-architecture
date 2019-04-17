@@ -6,7 +6,4 @@ package com.za.cs.app;
 
 public class AppConstants {
 
-    public static final String KEY_HAS_LOGIN = "hasLogin";
-    public static final String KEY_USER_INFO = "userInfo";
-
 }

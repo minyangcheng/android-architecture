@@ -57,6 +57,7 @@
     </LinearLayout>
     
     <Button
+        android:id="@+id/btn_logout"
         style="@style/normalBtn"
         android:layout_marginTop="50dp"
         android:text="安全退出"/>
