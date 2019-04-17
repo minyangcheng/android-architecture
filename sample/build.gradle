@@ -17,25 +17,30 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.za.cs"
+        applicationId "com.min.sample"
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode getVersionCodeByName(VERSION_NAME)
         versionName VERSION_NAME
 
         flavorDimensions "default"
-//        ndk {
-//            abiFilters "armeabi"
-//        }
+        ndk {
+            abiFilters "armeabi" //由于需要采用weex，故只能使用armeabi
+        }
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner" //instrumentation test需要
 
         buildConfigField 'String', 'API_SERVER_URL', '"https://api.cheguo.com"'
-        buildConfigField "String", "APP_SELF_UPDATE_URL", "\"http://api.fir.im/apps/latest/59488157ca87a818b2000190?api_token=f336262eba75d4d783407cdd7500075e\""
-        buildConfigField 'String', 'GIT_VERSION', "\"${getGitVersion()}\""
+        buildConfigField 'String', 'API_UPDATE_URL', '"https://version.cheguo.com"'
+        buildConfigField 'String', 'API_UPLOAD_PIC_URL', '"https://file.cheguo.com"'
 
-        manifestPlaceholders = ['BAIDU_KEY': '123',
-                                'APP_NAME' : '@string/app_name']
+        buildConfigField 'String', 'APP_SOURCE', '"198dc1d2c84b3dbc5774fe9b4085d5"'
+        buildConfigField 'String', 'APP_SECRET', '"be7175c2ef4dcf9c06e3471a5e5633"'
+
+        buildConfigField 'String', 'BUGLY_APPID', '"123"'
+        buildConfigField 'String', 'GIT_VERSION', "\"${getGitVersion()}\""
+        manifestPlaceholders = ['BAIDU_KEY'   : '123',
+                                'APP_NAME'    : '@string/app_name']
 
     }
 
@@ -110,7 +115,7 @@ android {
 
     greendao {
         schemaVersion 1
-        daoPackage 'com.za.cs.data.local.db.dao'
+        daoPackage 'com.min.sample.data.local.db.dao'
         targetGenDir 'src/main/java'
     }
 
@@ -128,8 +133,13 @@ dependencies {
 
     compile project(':librarys-base:core-basics')
 
-//    compile project(':librarys-base:sdk-location')
+    compile project(':librarys-base:sdk-location')
+    compile project(':librarys-base:h5-container')
+    compile project(':librarys-base:weex-container')
     compile project(':librarys-base:router')
+    if(!isBuildModule.toBoolean()){
+        compile project(':librarys-business:order')
+    }
 
     compile rootProject.ext.dependencies["butterknife"]
     annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
@@ -141,14 +151,14 @@ def getGitVersion() {
 
 int getVersionCodeByName(String versionName) {
     def arr = versionName.split('\\.')
-    for (int i = 1; i < arr.length; i++) {
-        if (arr[i].length() == 1) {
-            arr[i] = '0' + arr[i]
+    for(int i=1;i<arr.length;i++){
+        if(arr[i].length() == 1){
+            arr[i]='0'+arr[i]
         }
     }
     def versionCode = '';
-    for (int i = 0; i < arr.length; i++) {
-        versionCode = versionCode + arr[i];
+    for(int i=0;i<arr.length;i++){
+        versionCode = versionCode +  arr[i];
     }
     println versionCode
     return Integer.parseInt(versionCode)
